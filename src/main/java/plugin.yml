@@ -1,0 +1,12 @@
+name: JumpPorts
+main: net.roguedraco.jumpports.JumpPortsPlugin
+version: 2.0
+depends: [Vault]
+dev-url: http://dev.bukkit.org/server-mods/jumpports/
+commands:
+    jp:
+      usage: /jp
+      description: General JumpPorts Commands
+    jumpports:
+      usage: /jumpports
+      description: General JumpPorts Commands

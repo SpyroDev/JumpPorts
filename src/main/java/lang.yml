@@ -1,0 +1,43 @@
+# Language File: en_UK
+plugin:
+    enabled: "Plugin sucessfully loaded."
+    disabled: "Plugin has been disabled."
+    loaded: "Port loaded"
+    saved: "Port saved"
+exceptions:
+    noPermission: "&cYou don't have permission."
+    numExpected: "&cNumber expected, string received instead."
+    errorOccurred: "&cAn error has occurred. See console."
+    notEnoughArgs: "&cNot enough Arguments!"
+    invalidPage: "&cInvalid Page number."
+    portAlreadyExists: "&cPort %N already exists."
+    portDoesntExist: "&cPort %N does not exist."
+select:
+    enabled: "&aSelection mode enabled!"
+    disabled: "&aSelection mode disabled!"
+    point1: "&aPoint 1 selected. &7(&a%X&7, &a%Y&7, &a%Z&7)"
+    point2: "&aPoint 2 selected. &7(&a%X&7, &a%Y&7, &a%Z&7)"
+    reset: "&aPoints reset."
+createdRegion: "&aSucessfully created JumpPort '%N'"
+list:
+    ports: "&6Listing all JumpPorts &7(&cPage %P/%T&7)"
+    entryEnabled: "&a%N &7- %D (&b%P&7)"
+    entryDisabled: "&c%N &7- %D (&b%P&7)"
+port:
+    disabled: "&cPort not active."
+    cancelled: "&7Teleport Cancelled."
+    noTarget: "&7This port does not yet have a target!"
+    onArrival: "&7Welcome to %D (%P)"
+    triggered: "&aWould you like to teleport to &b%D&a?"
+    price: "&7This will cost you &a%P&7."
+    triggers: "&7Accept the teleport by Jumping. Or walk away to cancel."
+commands:
+    setPrice: "&7Set the price of &a%N&7 to &a%P&7."
+    setRegion: "&7Set the region of &a%N&7."
+    portDeleted: "&7Deleted port &a%N&7."
+    targetAdded: "&7Target has been added to &a%N&7."
+    targetsDeleted: "&7All targets have been removed for &a%N&7."
+    setEnabled: "&7Port &a%N&7 is now &aenabled&7."
+    noLongerInstant: "&7Port &a%N&7 is no longer instant."
+    nowInstant: "&7Port &a%N&7 is now instant."
+    setDescription: "&7Description of &a%N&7 is now '&b%D&7'."

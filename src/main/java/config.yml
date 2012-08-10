@@ -1,0 +1,31 @@
+# JumpPorts Default Configuration
+debug: false
+useFancyConsole: true
+quitSelection: false
+overrideTeleport: true
+afterEffect: true
+afterEffects:
+  CONFUSION:
+    duration: 100
+    amplifier: 5
+beginEffect: true
+beginEffects:
+  CONFUSION:
+    duration: 100
+    amplifier: 5
+  BLINDNESS:
+    duration: 90
+    amplifier: 1
+teleportDelay: 80
+triggers:
+  sneak: false
+  sprint: false
+  jump: true
+  fall: false
+  fireArrow: false
+  eggThrow: false
+portDefaults:
+  description: ""
+  enabled: false
+  instant: false
+  price: 0.00
