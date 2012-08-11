@@ -69,7 +69,7 @@ public class DynamicPluginCommand extends org.bukkit.command.Command implements 
         return permissions;
     }
 
-    @Override
+    
     public Plugin getPlugin() {
         return owningPlugin;
     }

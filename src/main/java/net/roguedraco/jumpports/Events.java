@@ -379,7 +379,6 @@ public class Events implements Listener {
 							plugin,
 							new Runnable() {
 
-								@Override
 								public void run() {
 									Events.processQueue();
 								}
@@ -412,7 +411,6 @@ public class Events implements Listener {
 				JumpPortsPlugin.getPlugin().getServer().getScheduler()
 						.scheduleSyncDelayedTask(plugin, new Runnable() {
 
-							@Override
 							public void run() {
 								Events.applyAfterEffects();
 							}
@@ -436,7 +434,6 @@ public class Events implements Listener {
 			JumpPortsPlugin.getPlugin().getServer().getScheduler()
 					.scheduleSyncDelayedTask(plugin, new Runnable() {
 
-						@Override
 						public void run() {
 							Events.applyAfterEffects();
 						}
