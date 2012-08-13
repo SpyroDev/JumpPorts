@@ -5,6 +5,7 @@
 	<artifactId>JumpPorts</artifactId>
 	<version>2.0-R1</version>
 	<name>JumpPorts</name>
+	<url>http://dev.bukkit.org/server-mods/jumpports/</url>
 	<description>Bukkit Plugin - Teleport in style</description>
 	<dependencies>
 		<dependency>
@@ -12,6 +13,7 @@
 			<artifactId>Vault</artifactId>
 			<version>1.2.16-SNAPSHOT</version>
 			<type>jar</type>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
@@ -24,6 +26,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.1</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<properties>
@@ -65,22 +68,8 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-				  <execution>
-				    <phase>package</phase>
-				    <goals>
-				      <goal>shade</goal>
-				    </goals>
-				  </execution>
-				</executions>
-		      </plugin>
 		</plugins>
 		<resources>
-		
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
