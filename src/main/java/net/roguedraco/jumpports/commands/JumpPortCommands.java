@@ -118,12 +118,14 @@ public class JumpPortCommands {
 	public static void setprice(CommandContext args, CommandSender sender)
 			throws CommandException {
 		if (JumpPorts.getPort(args.getString(0)) != null) {
-			JumpPorts.getPort(args.getString(0)).setPrice(args.getDouble(1));
+			JumpPort port = JumpPorts.getPort(args.getString(0));
+			port.setPrice(args.getDouble(1));
 			sender.sendMessage(Lang
 					.get("commands.setPrice")
 					.replaceAll("%P", "" + args.getDouble(1))
 					.replaceAll("%N",
-							JumpPorts.getPort(args.getString(0)).getName()));
+							port.getName()));
+			port.save();
 		} else {
 			sender.sendMessage(Lang.get("exception.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
@@ -197,6 +199,7 @@ public class JumpPortCommands {
 			JumpPorts.getPort(args.getString(0)).deleteTargets();
 			sender.sendMessage(Lang.get("commands.targetsDeleted").replaceAll(
 					"%N", args.getString(0)));
+			JumpPorts.getPort(args.getString(0)).save();
 		} else {
 			sender.sendMessage(Lang.get("exception.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
@@ -212,6 +215,7 @@ public class JumpPortCommands {
 			JumpPorts.getPort(args.getString(0)).setEnabled(true);
 			sender.sendMessage(Lang.get("commands.setEnabled").replaceAll("%N",
 					args.getString(0)));
+			JumpPorts.getPort(args.getString(0)).save();
 		} else {
 			sender.sendMessage(Lang.get("exception.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
@@ -227,6 +231,7 @@ public class JumpPortCommands {
 			JumpPorts.getPort(args.getString(0)).setEnabled(false);
 			sender.sendMessage(Lang.get("commands.setDisabled").replaceAll(
 					"%N", args.getString(0)));
+			JumpPorts.getPort(args.getString(0)).save();
 		} else {
 			sender.sendMessage(Lang.get("exception.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
@@ -244,11 +249,13 @@ public class JumpPortCommands {
 				port.setInstant(false);
 				sender.sendMessage(Lang.get("commands.noLongerInstant")
 						.replaceAll("%N", args.getString(0)));
+				JumpPorts.getPort(args.getString(0)).save();
 
 			} else {
 				port.setInstant(true);
 				sender.sendMessage(Lang.get("commands.nowInstant").replaceAll(
 						"%N", args.getString(0)));
+				JumpPorts.getPort(args.getString(0)).save();
 			}
 		} else {
 			sender.sendMessage(Lang.get("exception.portDoesntExist")
@@ -266,6 +273,7 @@ public class JumpPortCommands {
 			port.setDescription(args.getJoinedStrings(1));
 			sender.sendMessage(Lang.get("commands.setDescription")
 					.replaceAll("%N", args.getString(0)).replaceAll("%D", port.getDescription()));
+			JumpPorts.getPort(args.getString(0)).save();
 		} else {
 			sender.sendMessage(Lang.get("exception.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
