@@ -12,6 +12,7 @@ exceptions:
     invalidPage: "&cInvalid Page number."
     portAlreadyExists: "&cPort %N already exists."
     portDoesntExist: "&cPort %N does not exist."
+    noRegionSelected: "&cYou have not selected a region! Use &4/jp select&c."
 select:
     enabled: "&aSelection mode enabled!"
     disabled: "&aSelection mode disabled!"

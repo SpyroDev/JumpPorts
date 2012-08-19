@@ -42,22 +42,27 @@ public class JumpPortCommands {
 			throws CommandException {
 		if (JumpPorts.getPort(args.getString(0)) == null) {
 			RDPlayer rdp = RDPlayers.getPlayer(sender.getName());
-			if (JumpPortsPlugin.getPlugin().getConfig()
-					.getBoolean("quitSelection", true) == true) {
-				rdp.set("regionSelection", false);
+			if (rdp.getInt("regionBlocks.1.x") > 0
+					&& rdp.getInt("regionBlocks.2.x") > 0) {
+				if (JumpPortsPlugin.getPlugin().getConfig()
+						.getBoolean("quitSelection", true) == true) {
+					rdp.set("regionSelection", false);
+				}
+				JumpPort newPort = new JumpPort(args.getString(0));
+				newPort.setRegion(rdp.getString("regionBlocks.world"),
+						rdp.getInt("regionBlocks.1.x"),
+						rdp.getInt("regionBlocks.1.y"),
+						rdp.getInt("regionBlocks.1.z"),
+						rdp.getInt("regionBlocks.2.x"),
+						rdp.getInt("regionBlocks.2.y"),
+						rdp.getInt("regionBlocks.2.z"));
+				newPort.save();
+				JumpPorts.addPort(newPort);
+				sender.sendMessage(Lang.get("createdRegion").replaceAll("%N",
+						args.getString(0)));
+			} else {
+				sender.sendMessage(Lang.get("exception.noRegionSelected"));
 			}
-			JumpPort newPort = new JumpPort(args.getString(0));
-			newPort.setRegion(rdp.getString("regionBlocks.world"),
-					rdp.getInt("regionBlocks.1.x"),
-					rdp.getInt("regionBlocks.1.y"),
-					rdp.getInt("regionBlocks.1.z"),
-					rdp.getInt("regionBlocks.2.x"),
-					rdp.getInt("regionBlocks.2.y"),
-					rdp.getInt("regionBlocks.2.z"));
-			newPort.save();
-			JumpPorts.addPort(newPort);
-			sender.sendMessage(Lang.get("createdRegion").replaceAll("%N",
-					args.getString(0)));
 		} else {
 			sender.sendMessage(Lang.get("exception.portAlreadyExists")
 					.replaceAll("%N", args.getString(0)));
@@ -120,11 +125,9 @@ public class JumpPortCommands {
 		if (JumpPorts.getPort(args.getString(0)) != null) {
 			JumpPort port = JumpPorts.getPort(args.getString(0));
 			port.setPrice(args.getDouble(1));
-			sender.sendMessage(Lang
-					.get("commands.setPrice")
+			sender.sendMessage(Lang.get("commands.setPrice")
 					.replaceAll("%P", "" + args.getDouble(1))
-					.replaceAll("%N",
-							port.getName()));
+					.replaceAll("%N", port.getName()));
 			port.save();
 		} else {
 			sender.sendMessage(Lang.get("exception.portDoesntExist")
@@ -262,7 +265,7 @@ public class JumpPortCommands {
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
-	
+
 	@Command(aliases = { "desc", "d" }, usage = "[port] [description]", flags = "", desc = "Sets port description", help = "Sets the description of a port", min = 1, max = -1)
 	@CommandPermissions("jumpports.admin.desc")
 	@Console
@@ -272,7 +275,8 @@ public class JumpPortCommands {
 			JumpPort port = JumpPorts.getPort(args.getString(0));
 			port.setDescription(args.getJoinedStrings(1));
 			sender.sendMessage(Lang.get("commands.setDescription")
-					.replaceAll("%N", args.getString(0)).replaceAll("%D", port.getDescription()));
+					.replaceAll("%N", args.getString(0))
+					.replaceAll("%D", port.getDescription()));
 			JumpPorts.getPort(args.getString(0)).save();
 		} else {
 			sender.sendMessage(Lang.get("exception.portDoesntExist")
