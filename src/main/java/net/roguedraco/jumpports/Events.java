@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.roguedraco.lang.Lang;
-import net.roguedraco.player.RDPlayer;
-import net.roguedraco.player.RDPlayers;
+import net.roguedraco.jumpports.lang.Lang;
+import net.roguedraco.jumpports.player.RDPlayer;
+import net.roguedraco.jumpports.player.RDPlayers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

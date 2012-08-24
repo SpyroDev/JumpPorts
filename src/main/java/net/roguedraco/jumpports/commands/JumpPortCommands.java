@@ -7,9 +7,9 @@ import net.roguedraco.jumpports.JumpPort;
 import net.roguedraco.jumpports.JumpPorts;
 import net.roguedraco.jumpports.JumpPortsComparator;
 import net.roguedraco.jumpports.JumpPortsPlugin;
-import net.roguedraco.lang.Lang;
-import net.roguedraco.player.RDPlayer;
-import net.roguedraco.player.RDPlayers;
+import net.roguedraco.jumpports.lang.Lang;
+import net.roguedraco.jumpports.player.RDPlayer;
+import net.roguedraco.jumpports.player.RDPlayers;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

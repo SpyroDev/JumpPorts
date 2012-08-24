@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.roguedraco.lang.Lang;
+import net.roguedraco.jumpports.lang.Lang;
 
 import org.bukkit.Location;
 
