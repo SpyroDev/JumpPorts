@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -38,7 +39,7 @@ public class Events implements Listener {
 		Events.plugin = plugin;
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		if(JumpPortsPlugin.permission.playerHas(event.getPlayer(), "jumpports.update")) {
 			JumpPortsPlugin.getUpdater().updateNeeded(event.getPlayer());
