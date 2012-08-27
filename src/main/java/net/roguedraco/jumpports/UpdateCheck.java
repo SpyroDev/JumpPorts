@@ -18,7 +18,6 @@ public class UpdateCheck {
 	private URL filesFeed;
 	
 	private String version;
-	private String link;
 
 	public UpdateCheck(JavaPlugin plugin, String url) {
 		this.plugin = plugin;
@@ -40,17 +39,14 @@ public class UpdateCheck {
 			NodeList children = latestFile.getChildNodes();
 			
 			this.version = children.item(1).getTextContent();
-			this.link = children.item(3).getTextContent();
 			
 			this.version = this.version.replaceAll("JumpPorts-","");
-			this.link = this.link.replaceAll("-jump-ports-[A-za-z0-9-]","/");
 			if(version == plugin.getDescription().getVersion()) {
 				return false;
 			}
 			else {
 				// Send to player who requested
-				player.sendMessage("["+ChatColor.LIGHT_PURPLE+"JumpPorts"+ChatColor.WHITE+"] "+ChatColor.GREEN+"An update is availible. Current: "+ChatColor.DARK_GREEN+plugin.getDescription().getVersion()+ChatColor.GREEN+" Latest: "+ChatColor.DARK_GREEN+version);
-				player.sendMessage("["+ChatColor.LIGHT_PURPLE+"JumpPorts"+ChatColor.WHITE+"] "+ChatColor.AQUA+link);
+				player.sendMessage("["+ChatColor.LIGHT_PURPLE+"JumpPorts"+ChatColor.WHITE+"] "+ChatColor.GREEN+"Plugin Outdated. Current: "+ChatColor.DARK_GREEN+plugin.getDescription().getVersion()+ChatColor.GREEN+" Latest: "+ChatColor.DARK_GREEN+version);
 				return true;
 			}
 			

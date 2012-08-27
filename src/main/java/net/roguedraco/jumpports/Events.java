@@ -22,6 +22,7 @@ import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
@@ -43,6 +44,21 @@ public class Events implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		if(JumpPortsPlugin.permission.playerHas(event.getPlayer(), "jumpports.update")) {
 			JumpPortsPlugin.getUpdater().updateNeeded(event.getPlayer());
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		Player player = event.getPlayer();
+		String name = player.getName();
+		if(teleportQueue.contains(name)) {
+			teleportQueue.remove(name);
+		}
+		if(ignoredPlayers.contains(name)) {
+			ignoredPlayers.remove(name);
+		}
+		if(afterEffects.contains(name)) {
+			afterEffects.remove(name);
 		}
 	}
 

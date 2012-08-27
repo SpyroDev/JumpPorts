@@ -42,8 +42,8 @@ public class JumpPortCommands {
 			throws CommandException {
 		if (JumpPorts.getPort(args.getString(0)) == null) {
 			RDPlayer rdp = RDPlayers.getPlayer(sender.getName());
-			if (rdp.getInt("regionBlocks.1.x") > 0
-					&& rdp.getInt("regionBlocks.2.x") > 0) {
+			if (rdp.getInt("regionBlocks.1.y") > -1
+					&& rdp.getInt("regionBlocks.2.y") > -1) {
 				if (JumpPortsPlugin.getPlugin().getConfig()
 						.getBoolean("quitSelection", true) == true) {
 					rdp.set("regionSelection", false);
