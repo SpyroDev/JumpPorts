@@ -1,8 +1,8 @@
-name: JumpPorts
+name: ${project.name}
 main: net.roguedraco.jumpports.JumpPortsPlugin
-version: 2.0
+version: ${project.version}
 depends: [Vault]
-dev-url: http://dev.bukkit.org/server-mods/jumpports/
+dev-url: ${project.url}
 commands:
     jp:
       usage: /jp

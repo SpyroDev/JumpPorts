@@ -61,10 +61,10 @@ public class JumpPortCommands {
 				sender.sendMessage(Lang.get("createdRegion").replaceAll("%N",
 						args.getString(0)));
 			} else {
-				sender.sendMessage(Lang.get("exception.noRegionSelected"));
+				sender.sendMessage(Lang.get("exceptions.noRegionSelected"));
 			}
 		} else {
-			sender.sendMessage(Lang.get("exception.portAlreadyExists")
+			sender.sendMessage(Lang.get("exceptions.portAlreadyExists")
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
@@ -130,7 +130,7 @@ public class JumpPortCommands {
 					.replaceAll("%N", port.getName()));
 			port.save();
 		} else {
-			sender.sendMessage(Lang.get("exception.portDoesntExist")
+			sender.sendMessage(Lang.get("exceptions.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
@@ -157,7 +157,7 @@ public class JumpPortCommands {
 			sender.sendMessage(Lang.get("commands.setRegion").replaceAll("%N",
 					args.getString(0)));
 		} else {
-			sender.sendMessage(Lang.get("exception.portDoesntExist")
+			sender.sendMessage(Lang.get("exceptions.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
@@ -172,7 +172,7 @@ public class JumpPortCommands {
 			sender.sendMessage(Lang.get("commands.portDeleted").replaceAll(
 					"%N", args.getString(0)));
 		} else {
-			sender.sendMessage(Lang.get("exception.portDoesntExist")
+			sender.sendMessage(Lang.get("exceptions.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
@@ -188,7 +188,7 @@ public class JumpPortCommands {
 			sender.sendMessage(Lang.get("commands.targetAdded").replaceAll(
 					"%N", args.getString(0)));
 		} else {
-			sender.sendMessage(Lang.get("exception.portDoesntExist")
+			sender.sendMessage(Lang.get("exceptions.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
@@ -204,7 +204,7 @@ public class JumpPortCommands {
 					"%N", args.getString(0)));
 			JumpPorts.getPort(args.getString(0)).save();
 		} else {
-			sender.sendMessage(Lang.get("exception.portDoesntExist")
+			sender.sendMessage(Lang.get("exceptions.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
@@ -220,7 +220,7 @@ public class JumpPortCommands {
 					args.getString(0)));
 			JumpPorts.getPort(args.getString(0)).save();
 		} else {
-			sender.sendMessage(Lang.get("exception.portDoesntExist")
+			sender.sendMessage(Lang.get("exceptions.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
@@ -236,7 +236,7 @@ public class JumpPortCommands {
 					"%N", args.getString(0)));
 			JumpPorts.getPort(args.getString(0)).save();
 		} else {
-			sender.sendMessage(Lang.get("exception.portDoesntExist")
+			sender.sendMessage(Lang.get("exceptions.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
@@ -261,7 +261,7 @@ public class JumpPortCommands {
 				JumpPorts.getPort(args.getString(0)).save();
 			}
 		} else {
-			sender.sendMessage(Lang.get("exception.portDoesntExist")
+			sender.sendMessage(Lang.get("exceptions.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
@@ -279,7 +279,7 @@ public class JumpPortCommands {
 					.replaceAll("%D", port.getDescription()));
 			JumpPorts.getPort(args.getString(0)).save();
 		} else {
-			sender.sendMessage(Lang.get("exception.portDoesntExist")
+			sender.sendMessage(Lang.get("exceptions.portDoesntExist")
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
