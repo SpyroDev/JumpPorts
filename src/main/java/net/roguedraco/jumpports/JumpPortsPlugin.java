@@ -8,9 +8,9 @@ import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.roguedraco.jumpports.commands.GeneralCommands;
-import net.roguedraco.lang.Lang;
-import net.roguedraco.player.RDEvents;
-import net.roguedraco.player.RDPlayers;
+import net.roguedraco.jumpports.lang.Lang;
+import net.roguedraco.jumpports.player.RDEvents;
+import net.roguedraco.jumpports.player.RDPlayers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,6 +45,8 @@ public class JumpPortsPlugin extends JavaPlugin {
 	public static Economy economy = null;
 
 	public static Lang lang;
+	
+	private static UpdateCheck updater;
 
 	public void onEnable() {
 
@@ -111,6 +113,8 @@ public class JumpPortsPlugin extends JavaPlugin {
 		    // Failed to submit the stats :-(
 		}
 		
+		JumpPortsPlugin.updater = new UpdateCheck(this, "http://dev.bukkit.org/server-mods/jumpports/files.rss");
+		
 		log(Lang.get("plugin.enabled"));
 	}
 
@@ -123,6 +127,10 @@ public class JumpPortsPlugin extends JavaPlugin {
 
 	public static JavaPlugin getPlugin() {
 		return plugin;
+	}
+	
+	public static UpdateCheck getUpdater() {
+		return updater;
 	}
 
 	private void setupCommands() {
