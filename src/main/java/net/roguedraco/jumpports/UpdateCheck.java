@@ -41,7 +41,7 @@ public class UpdateCheck {
 			this.version = children.item(1).getTextContent();
 			
 			this.version = this.version.replaceAll("JumpPorts-","");
-			if(version == plugin.getDescription().getVersion()) {
+			if(version.equalsIgnoreCase(plugin.getDescription().getVersion())) {
 				return false;
 			}
 			else {
