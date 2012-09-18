@@ -40,7 +40,7 @@ public class UpdateCheck {
 			
 			this.version = children.item(1).getTextContent();
 			
-			this.version = this.version.replaceAll("JumpPorts-","");
+			this.version = this.version.replaceAll("JumpPorts-","").trim();
 			if(version.equalsIgnoreCase(plugin.getDescription().getVersion())) {
 				return false;
 			}
