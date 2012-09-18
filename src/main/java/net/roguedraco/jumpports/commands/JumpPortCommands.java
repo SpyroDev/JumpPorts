@@ -283,4 +283,70 @@ public class JumpPortCommands {
 					.replaceAll("%N", args.getString(0)));
 		}
 	}
+	
+	@Command(aliases = { "whitelist", "w" }, usage = "[port] [player1] [player2] ...", flags = "", desc = "Adds/removes players to the whitelist", help = "Choose what players can use this teleport", min = 2, max = -1)
+	@CommandPermissions("jumpports.admin.whitelist")
+	@Console
+	public static void whitelist(CommandContext args, CommandSender sender)
+			throws CommandException {
+		if (JumpPorts.getPort(args.getString(0)) != null) {
+			JumpPort port = JumpPorts.getPort(args.getString(0));
+			
+			String addedPlayers = "";
+			String removedPlayers = "";
+			
+			for(String player : args.getSlice(1)) {
+				if(player.startsWith("-")) {
+					port.removeFromWhitelist(player);
+					removedPlayers += player+" ";
+				}
+				else {
+					port.addToWhitelist(player);
+					addedPlayers += player+" ";
+				}
+			}
+			
+			sender.sendMessage(Lang.get("commands.addedToWhitelist")
+					.replaceAll("%N", args.getString(0))
+					.replaceAll("%A", addedPlayers)
+					.replaceAll("%R", removedPlayers));
+			JumpPorts.getPort(args.getString(0)).save();
+		} else {
+			sender.sendMessage(Lang.get("exceptions.portDoesntExist")
+					.replaceAll("%N", args.getString(0)));
+		}
+	}
+	
+	@Command(aliases = { "blacklist", "bl" }, usage = "[port] [player1] [player2] ...", flags = "", desc = "Adds/removes players to the blacklist", help = "Choose what players cannot use this teleport", min = 2, max = -1)
+	@CommandPermissions("jumpports.admin.blacklist")
+	@Console
+	public static void blacklist(CommandContext args, CommandSender sender)
+			throws CommandException {
+		if (JumpPorts.getPort(args.getString(0)) != null) {
+			JumpPort port = JumpPorts.getPort(args.getString(0));
+			
+			String addedPlayers = "";
+			String removedPlayers = "";
+			
+			for(String player : args.getSlice(1)) {
+				if(player.startsWith("-")) {
+					port.removeFromBlacklist(player);
+					removedPlayers += player+" ";
+				}
+				else {
+					port.addToBlacklist(player);
+					addedPlayers += player+" ";
+				}
+			}
+			
+			sender.sendMessage(Lang.get("commands.addedToBlacklist")
+					.replaceAll("%N", args.getString(0))
+					.replaceAll("%A", addedPlayers)
+					.replaceAll("%R", removedPlayers));
+			JumpPorts.getPort(args.getString(0)).save();
+		} else {
+			sender.sendMessage(Lang.get("exceptions.portDoesntExist")
+					.replaceAll("%N", args.getString(0)));
+		}
+	}
 }

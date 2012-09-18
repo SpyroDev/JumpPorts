@@ -43,3 +43,5 @@ commands:
     noLongerInstant: "&7Port &a%N&7 is no longer instant."
     nowInstant: "&7Port &a%N&7 is now instant."
     setDescription: "&7Description of &a%N&7 is now '&b%D&7'."
+    addedToWhitelist: "&7Players &a'&7%A%a'%7 added to whitelist and &a'&7%R&a'&7 removed from whitelist for &a%N&7."
+    addedToWhitelist: "&7Players &a'&7%A%a'%7 added to blacklist and &a'&7%R&a'&7 removed from blacklist for &a%N&7."
