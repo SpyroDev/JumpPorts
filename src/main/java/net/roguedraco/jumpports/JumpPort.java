@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
@@ -13,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 public class JumpPort {
 
@@ -27,6 +29,9 @@ public class JumpPort {
 	private Location maxLoc;
 
 	private Set<Location> locations = new HashSet<Location>();
+	private List<String> blacklist;
+	private List<String> whitelist;
+	
 
 	private File confFile = null;
 	private FileConfiguration conf = null;
@@ -117,6 +122,44 @@ public class JumpPort {
 		minLoc = new Location(Bukkit.getServer().getWorld(world), xMin, yMin, zMin);
 		maxLoc = new Location(Bukkit.getServer().getWorld(world), xMax, yMax, zMax);
 	}
+	
+	public boolean canTeleport(Player player) {
+		if(!blacklist.contains(player.getName()) && !blacklist.contains("g:"+JumpPortsPlugin.permission.getPrimaryGroup(player))) {
+			if(!whitelist.isEmpty()) {
+				if(whitelist.contains(player.getName()) || whitelist.contains("g:"+JumpPortsPlugin.permission.getPrimaryGroup(player))) {
+					return true;
+				}
+			}
+			else {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void addToWhitelist(String playername) {
+		if(!whitelist.contains(playername)) {
+			whitelist.add(playername);
+		}
+	}
+	
+	public void addToBlacklist(String playername) {
+		if(!blacklist.contains(playername)) {
+			blacklist.add(playername);
+		}
+	}
+	
+	public void removeFromWhitelist(String playername) {
+		if(whitelist.contains(playername)) {
+			whitelist.remove(playername);
+		}
+	}
+	
+	public void removeFromBlacklist(String playername) {
+		if(blacklist.contains(playername)) {
+			blacklist.remove(playername);
+		}
+	}
 
 	public void save() {
 		confFile = new File("plugins/JumpPorts/ports/", name + ".yml");
@@ -149,7 +192,10 @@ public class JumpPort {
 			conf.set("targets." + x + ".yaw", (double) loc.getYaw());
 			conf.set("targets." + x + ".pitch", (double) loc.getPitch());
 			x++;
-		}
+		}		
+		
+		conf.set("blacklist", blacklist);
+		conf.set("whitelist", whitelist);
 
 		try {
 			conf.save(confFile); // Save the file
@@ -195,6 +241,9 @@ public class JumpPort {
 				this.locations.add(loc);
 			}
 		}
+		
+		this.blacklist = conf.getStringList("blacklist");
+		this.whitelist = conf.getStringList("whitelist");
 	}
 
 	public void delete() {

@@ -39,25 +39,26 @@ public class Events implements Listener {
 	public Events(JumpPortsPlugin plugin) {
 		Events.plugin = plugin;
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		if(JumpPortsPlugin.permission.playerHas(event.getPlayer(), "jumpports.update")) {
+		if (JumpPortsPlugin.permission.playerHas(event.getPlayer(),
+				"jumpports.update")) {
 			JumpPortsPlugin.getUpdater().updateNeeded(event.getPlayer());
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		String name = player.getName();
-		if(teleportQueue.contains(name)) {
+		if (teleportQueue.contains(name)) {
 			teleportQueue.remove(name);
 		}
-		if(ignoredPlayers.contains(name)) {
+		if (ignoredPlayers.contains(name)) {
 			ignoredPlayers.remove(name);
 		}
-		if(afterEffects.contains(name)) {
+		if (afterEffects.contains(name)) {
 			afterEffects.remove(name);
 		}
 	}
@@ -76,50 +77,64 @@ public class Events implements Listener {
 				JumpPort port = JumpPorts.getPort(event.getTo());
 
 				if (port.isEnabled()) {
-					Location loc = port.getTarget();
-					if (loc != null) {
+					if (port.canTeleport(player)) {
+						Location loc = port.getTarget();
+						if (loc != null) {
 
-						if (port.isInstant()) {
-							teleportPlayer(player, port, loc);
-							return;
-						}
-
-						// If Jump is on, check for jump
-						if (JumpPortsPlugin.getPlugin().getConfig()
-								.getBoolean("triggers.jump")) {
-							if (event.getTo().getY() > event.getFrom().getY()) {
+							if (port.isInstant()) {
 								teleportPlayer(player, port, loc);
 								return;
 							}
-						}
 
-						// If fall is on, check for fall
-						if (JumpPortsPlugin.getPlugin().getConfig()
-								.getBoolean("triggers.fall")) {
-							if (event.getTo().getY() < event.getFrom().getY()) {
-								teleportPlayer(player, port, loc);
-								return;
+							// If Jump is on, check for jump
+							if (JumpPortsPlugin.getPlugin().getConfig()
+									.getBoolean("triggers.jump")) {
+								if (event.getTo().getY() > event.getFrom()
+										.getY()) {
+									teleportPlayer(player, port, loc);
+									return;
+								}
 							}
-						}
 
-						// Tell them info about the pad
-						if (!ignoredPlayers.contains(player.getName())) {
-							player.sendMessage(Lang.get("port.triggered")
-									.replaceAll("%N", port.getName())
-									.replaceAll("%D", port.getDescription()));
-							if (port.getPrice() > 0) {
-								player.sendMessage(Lang.get("port.price")
-										.replaceAll("%P", "" + port.getPrice()));
+							// If fall is on, check for fall
+							if (JumpPortsPlugin.getPlugin().getConfig()
+									.getBoolean("triggers.fall")) {
+								if (event.getTo().getY() < event.getFrom()
+										.getY()) {
+									teleportPlayer(player, port, loc);
+									return;
+								}
 							}
-							player.sendMessage(Lang.get("port.triggers"));
-							ignoredPlayers.add(player.getName());
+
+							// Tell them info about the pad
+							if (!ignoredPlayers.contains(player.getName())) {
+								player.sendMessage(Lang
+										.get("port.triggered")
+										.replaceAll("%N", port.getName())
+										.replaceAll("%D", port.getDescription()));
+								if (port.getPrice() > 0) {
+									player.sendMessage(Lang.get("port.price")
+											.replaceAll("%P",
+													"" + port.getPrice()));
+								}
+								player.sendMessage(Lang.get("port.triggers"));
+								ignoredPlayers.add(player.getName());
+							}
+						} else {
+							if (!ignoredPlayers.contains(player.getName())) {
+								JumpPortsPlugin.debug("Action| Player: "
+										+ player.getName()
+										+ ", Action: No target for port");
+								player.sendMessage(Lang.get("port.noTarget"));
+								ignoredPlayers.add(player.getName());
+							}
 						}
 					} else {
 						if (!ignoredPlayers.contains(player.getName())) {
 							JumpPortsPlugin.debug("Action| Player: "
 									+ player.getName()
-									+ ", Action: No target for port");
-							player.sendMessage(Lang.get("port.noTarget"));
+									+ ", Action: No permission to use");
+							player.sendMessage(Lang.get("port.noPermission"));
 							ignoredPlayers.add(player.getName());
 						}
 					}
