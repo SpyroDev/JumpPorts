@@ -143,9 +143,9 @@ public class JumpPort {
 		int x = 0;
 		for (Location loc : locations) {
 			conf.set("targets." + x + ".world", loc.getWorld().getName());
-			conf.set("targets." + x + ".x", loc.getBlockX());
-			conf.set("targets." + x + ".y", loc.getBlockY());
-			conf.set("targets." + x + ".z", loc.getBlockZ());
+			conf.set("targets." + x + ".x", loc.getX());
+			conf.set("targets." + x + ".y", loc.getY());
+			conf.set("targets." + x + ".z", loc.getZ());
 			conf.set("targets." + x + ".yaw", (double) loc.getYaw());
 			conf.set("targets." + x + ".pitch", (double) loc.getPitch());
 			x++;
