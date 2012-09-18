@@ -7,6 +7,8 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.roguedraco.jumpports.JumpPortsPlugin;
+
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -34,6 +36,12 @@ public class Lang {
 			YamlConfiguration defConfig = YamlConfiguration
 					.loadConfiguration(defConfigStream);
 			lang.setDefaults(defConfig);
+		}
+		
+		try {
+			lang.save(langFile);
+		} catch (IOException e) {
+			JumpPortsPlugin.log(Level.SEVERE,"Unable to save language file.");
 		}
 	}
 	
