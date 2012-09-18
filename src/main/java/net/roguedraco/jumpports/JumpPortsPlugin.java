@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+import net.roguedraco.jumpports.Metrics.Graph;
 import net.roguedraco.jumpports.commands.GeneralCommands;
 import net.roguedraco.jumpports.lang.Lang;
 import net.roguedraco.jumpports.player.RDEvents;
@@ -70,6 +71,13 @@ public class JumpPortsPlugin extends JavaPlugin {
 			getServer().getPluginManager().disablePlugin(plugin);
 			return;
 		}
+		
+		if (getServer().getPluginManager().getPlugin("dynmap") != null) {
+			setupDynmap();
+		} else {
+			log(ChatColor.RED
+					+ "Dynmap support disabled.");
+		}
 
 		// Create ports folder
 		File theDir = new File(this.getDataFolder() + "/ports/"
@@ -108,6 +116,20 @@ public class JumpPortsPlugin extends JavaPlugin {
 		
 		try {
 		    Metrics metrics = new Metrics(this);
+		    
+		    // Construct a graph, which can be immediately used and considered as valid
+		    Graph graph = metrics.createGraph("Number of Ports");
+
+		    // Diamond sword
+		    graph.addPlotter(new Metrics.Plotter("Ports") {
+
+		            @Override
+		            public int getValue() {
+		                    return JumpPorts.getList().size(); // Number of players who used a diamond sword
+		            }
+
+		    });
+		    
 		    metrics.start();
 		} catch (IOException e) {
 		    // Failed to submit the stats :-(
@@ -165,6 +187,12 @@ public class JumpPortsPlugin extends JavaPlugin {
 		}
 
 		return (economy != null);
+	}
+	
+	private void setupDynmap() {
+		//DynmapCommonAPI api = (DynmapCommonAPI)Bukkit.getPluginManager().getPlugin("dynmap");
+		//MarkerAPI mapi = api.getMarkerAPI();
+		
 	}
 
 	@Override
