@@ -2,6 +2,7 @@ package net.roguedraco.jumpports;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,8 +30,8 @@ public class JumpPort {
 	private Location maxLoc;
 
 	private Set<Location> locations = new HashSet<Location>();
-	private List<String> blacklist;
-	private List<String> whitelist;
+	private List<String> blacklist = new ArrayList<String>();
+	private List<String> whitelist = new ArrayList<String>();
 	
 
 	private File confFile = null;
