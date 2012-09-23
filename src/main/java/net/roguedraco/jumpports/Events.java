@@ -396,6 +396,7 @@ public class Events implements Listener {
 						.replaceAll("%D", port.getDescription())
 						.replaceAll("%N", port.getName())
 						.replaceAll("%P", "" + port.getPrice()));
+				return;
 			}
 		}
 		if (JumpPortsPlugin.getPlugin().getConfig().getInt("teleportDelay") > 0) {
