@@ -386,12 +386,15 @@ public class Events implements Listener {
 	}
 
 	public void teleportPlayer(Player player, JumpPort port, Location loc) {
+		JumpPortsPlugin.debug("Port: "+port.getName()+", Desc:"+port.getDescription()+", Price: "+port.getPrice()+", Instant: "+((port.isInstant() == true) ? "true" : "false")+", Enabled: "+((port.isEnabled() == true) ? "true" : "false"));
 		if (port.getPrice() > 0) {
-			if (JumpPortsPlugin.economy.getBalance(player.getName()) >= port
-					.getPrice()) {
+			JumpPortsPlugin.debug("Price is higher than 0");
+			if (JumpPortsPlugin.economy.has(player.getName(), port.getPrice())) {
+				JumpPortsPlugin.debug("Has enough funds. Player: "+JumpPortsPlugin.economy.getBalance(player.getName())+", Port: "+port.getPrice());
 				JumpPortsPlugin.economy.withdrawPlayer(player.getName(),
 						port.getPrice());
 			} else {
+				JumpPortsPlugin.debug("Not enough funds. Player: "+JumpPortsPlugin.economy.getBalance(player.getName())+", Port: "+port.getPrice());
 				player.sendMessage(Lang.get("port.notEnoughFunds")
 						.replaceAll("%D", port.getDescription())
 						.replaceAll("%N", port.getName())
