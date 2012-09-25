@@ -33,6 +33,7 @@ port:
   price: "&7This will cost you &a%P&7."
   triggers: "&7Accept the teleport by Jumping. Or walk away to cancel."
   noPermission: "&cYou do not have permission to use this port!"
+  notEnoughFunds: "&cYou do not have enough funds to use this port."
 commands:
   setPrice: "&7Set the price of &a%N&7 to &a%P&7."
   setRegion: "&7Set the region of &a%N&7."

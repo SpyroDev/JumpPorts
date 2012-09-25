@@ -45,7 +45,7 @@ public class JumpPortsPlugin extends JavaPlugin {
 	public static Economy economy = null;
 
 	public static Lang lang;
-	
+
 	private static UpdateCheck updater;
 
 	public void onEnable() {
@@ -69,12 +69,11 @@ public class JumpPortsPlugin extends JavaPlugin {
 			getServer().getPluginManager().disablePlugin(plugin);
 			return;
 		}
-		
+
 		if (getServer().getPluginManager().getPlugin("dynmap") != null) {
 			setupDynmap();
 		} else {
-			log(ChatColor.RED
-					+ "Dynmap support disabled.");
+			log(ChatColor.RED + "Dynmap support disabled.");
 		}
 
 		// Create ports folder
@@ -111,30 +110,26 @@ public class JumpPortsPlugin extends JavaPlugin {
 		pm.registerEvents(RDEvents, this);
 		RDPlayers.loadAll();
 		JumpPorts.loadPorts();
-		
+
 		try {
-		    Metrics metrics = new Metrics(this);
-		    
-		    // Construct a graph, which can be immediately used and considered as valid
-		    Graph graph = metrics.createGraph("Number of Ports");
+			Metrics metrics = new Metrics(this);
+			Graph graph = metrics.createGraph("Number of Ports");
+			graph.addPlotter(new Metrics.Plotter("Ports") {
 
-		    // Diamond sword
-		    graph.addPlotter(new Metrics.Plotter("Ports") {
+				@Override
+				public int getValue() {
+					return JumpPorts.getList().size();
+				}
 
-		            @Override
-		            public int getValue() {
-		                    return JumpPorts.getList().size(); // Number of players who used a diamond sword
-		            }
+			});
 
-		    });
-		    
-		    metrics.start();
+			metrics.start();
 		} catch (IOException e) {
-		    // Failed to submit the stats :-(
+			// Failed to submit the stats :-(
 		}
-		
+
 		JumpPortsPlugin.updater = new UpdateCheck(this, "http://dev.bukkit.org/server-mods/jumpports/files.rss");
-		
+
 		log(Lang.get("plugin.enabled"));
 	}
 
@@ -148,7 +143,7 @@ public class JumpPortsPlugin extends JavaPlugin {
 	public static JavaPlugin getPlugin() {
 		return plugin;
 	}
-	
+
 	public static UpdateCheck getUpdater() {
 		return updater;
 	}
@@ -186,11 +181,12 @@ public class JumpPortsPlugin extends JavaPlugin {
 
 		return (economy != null);
 	}
-	
+
 	private void setupDynmap() {
-		//DynmapCommonAPI api = (DynmapCommonAPI)Bukkit.getPluginManager().getPlugin("dynmap");
-		//MarkerAPI mapi = api.getMarkerAPI();
-		
+		// DynmapCommonAPI api =
+		// (DynmapCommonAPI)Bukkit.getPluginManager().getPlugin("dynmap");
+		// MarkerAPI mapi = api.getMarkerAPI();
+
 	}
 
 	@Override
