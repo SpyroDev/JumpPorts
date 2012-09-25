@@ -59,7 +59,6 @@ public class JumpPortsPlugin extends JavaPlugin {
 		JumpPortsPlugin.pluginVersion = this.getDescription().getVersion();
 
 		JumpPortsPlugin.lang = new Lang(this);
-		lang.setupLanguage();
 
 		if (getServer().getPluginManager().getPlugin("Vault") != null) {
 			setupPermissions();
@@ -142,7 +141,7 @@ public class JumpPortsPlugin extends JavaPlugin {
 	public void onDisable() {
 		RDPlayers.saveAll();
 		JumpPorts.savePorts();
-		lang.saveLanguage();
+		lang.saveLang();
 		log(Lang.get("plugin.disabled"));
 	}
 
