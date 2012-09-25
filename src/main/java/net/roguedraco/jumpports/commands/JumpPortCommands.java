@@ -7,7 +7,7 @@ import net.roguedraco.jumpports.JumpPort;
 import net.roguedraco.jumpports.JumpPorts;
 import net.roguedraco.jumpports.JumpPortsComparator;
 import net.roguedraco.jumpports.JumpPortsPlugin;
-import net.roguedraco.jumpports.lang.Lang;
+import net.roguedraco.jumpports.Lang;
 import net.roguedraco.jumpports.player.RDPlayer;
 import net.roguedraco.jumpports.player.RDPlayers;
 

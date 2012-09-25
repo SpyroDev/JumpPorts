@@ -1,4 +1,4 @@
-package net.roguedraco.jumpports.lang;
+package net.roguedraco.jumpports;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Lang {
 	
-	private static FileConfiguration lang = null;
+	private FileConfiguration lang = null;
 	private File langFile = null;
 	private JavaPlugin plugin;
 	
@@ -23,9 +23,7 @@ public class Lang {
 	}
 	
 	public void setupLanguage() {
-		if (langFile == null) {
-			this.langFile = new File(plugin.getDataFolder(), "lang.yml");
-		}
+		langFile = new File("plugins/JumpPorts/", "lang.yml");
 		lang = YamlConfiguration.loadConfiguration(langFile);
 
 		// Look for defaults in the jar
@@ -51,8 +49,12 @@ public class Lang {
 		}
 	}
 	
+	public FileConfiguration getLang() {
+		return this.lang;
+	}
+	
 	public static String get(String path) {
-		String val = lang.getString(path);
+		String val = JumpPortsPlugin.lang.getLang().getString(path);
 		return parseColours(val);
 	}
 	

@@ -9,7 +9,6 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.roguedraco.jumpports.Metrics.Graph;
 import net.roguedraco.jumpports.commands.GeneralCommands;
-import net.roguedraco.jumpports.lang.Lang;
 import net.roguedraco.jumpports.player.RDEvents;
 import net.roguedraco.jumpports.player.RDPlayers;
 
