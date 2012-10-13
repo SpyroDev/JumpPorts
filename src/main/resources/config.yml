@@ -16,6 +16,8 @@ beginEffects:
   BLINDNESS:
     duration: 90
     amplifier: 1
+harmlessLightningLeave: false
+harmlessLightningArrive: false
 teleportDelay: 80
 triggers:
   sneak: false

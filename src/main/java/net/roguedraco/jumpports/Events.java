@@ -353,9 +353,14 @@ public class Events implements Listener {
 	}
 
 	public static void applyAfterEffects() {
-		if (JumpPortsPlugin.getPlugin().getConfig().getBoolean("afterEffect") == true) {
-			for (String p : afterEffects) {
-				Player player = Bukkit.getServer().getPlayer(p);
+		for (String p : afterEffects) {
+			Player player = Bukkit.getServer().getPlayer(p);
+			if (JumpPortsPlugin.getPlugin().getConfig()
+					.getBoolean("harmlessLightningArrive", false) == true) {
+				player.getWorld().strikeLightningEffect(player.getLocation());
+			}
+			if (JumpPortsPlugin.getPlugin().getConfig()
+					.getBoolean("afterEffect") == true) {
 				// Override other teleports is set to true.
 				Iterator<String> effects = JumpPortsPlugin.getPlugin()
 						.getConfig().getConfigurationSection("afterEffects")
@@ -385,15 +390,24 @@ public class Events implements Listener {
 	}
 
 	public void teleportPlayer(Player player, JumpPort port, Location loc) {
-		JumpPortsPlugin.debug("Port: "+port.getName()+", Desc:"+port.getDescription()+", Price: "+port.getPrice()+", Instant: "+((port.isInstant() == true) ? "true" : "false")+", Enabled: "+((port.isEnabled() == true) ? "true" : "false"));
+		JumpPortsPlugin.debug("Port: " + port.getName() + ", Desc:"
+				+ port.getDescription() + ", Price: " + port.getPrice()
+				+ ", Instant: "
+				+ ((port.isInstant() == true) ? "true" : "false")
+				+ ", Enabled: "
+				+ ((port.isEnabled() == true) ? "true" : "false"));
 		if (port.getPrice() > 0) {
 			JumpPortsPlugin.debug("Price is higher than 0");
 			if (JumpPortsPlugin.economy.has(player.getName(), port.getPrice())) {
-				JumpPortsPlugin.debug("Has enough funds. Player: "+JumpPortsPlugin.economy.getBalance(player.getName())+", Port: "+port.getPrice());
+				JumpPortsPlugin.debug("Has enough funds. Player: "
+						+ JumpPortsPlugin.economy.getBalance(player.getName())
+						+ ", Port: " + port.getPrice());
 				JumpPortsPlugin.economy.withdrawPlayer(player.getName(),
 						port.getPrice());
 			} else {
-				JumpPortsPlugin.debug("Not enough funds. Player: "+JumpPortsPlugin.economy.getBalance(player.getName())+", Port: "+port.getPrice());
+				JumpPortsPlugin.debug("Not enough funds. Player: "
+						+ JumpPortsPlugin.economy.getBalance(player.getName())
+						+ ", Port: " + port.getPrice());
 				player.sendMessage(Lang.get("port.notEnoughFunds")
 						.replaceAll("%D", port.getDescription())
 						.replaceAll("%N", port.getName())
@@ -441,13 +455,20 @@ public class Events implements Listener {
 
 	public static void processQueue() {
 		for (String p : teleportQueue) {
+			Player player = Bukkit.getServer().getPlayer(p);
+			// Lightning?
+			if (JumpPortsPlugin.getPlugin().getConfig()
+					.getBoolean("harmlessLightningLeave", false) == true) {
+				player.getWorld().strikeLightningEffect(player.getLocation());
+			}
+
 			RDPlayer rdp = RDPlayers.getPlayer(p);
 			Location target = new Location(Bukkit.getWorld(rdp
 					.getString("target.world")), rdp.getDouble("target.x"),
 					rdp.getDouble("target.y"), rdp.getDouble("target.z"),
 					Float.parseFloat(rdp.getString("target.yaw")),
 					Float.parseFloat(rdp.getString("target.pitch")));
-			Bukkit.getServer().getPlayer(p).teleport(target);
+			player.teleport(target);
 			if (JumpPortsPlugin.getPlugin().getConfig()
 					.getBoolean("overrideTeleport") == false) {
 				afterEffects.add(Bukkit.getServer().getPlayer(p).getName());
