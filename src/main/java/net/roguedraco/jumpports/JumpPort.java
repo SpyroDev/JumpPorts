@@ -53,9 +53,14 @@ public class JumpPort {
 	}
 
 	public String getDescription() {
-		if (description.length() > 0) {
-			return description;
-		} else {
+		try {
+			if (description.length() > 0) {
+				return description;
+			} else {
+				return name;
+			}
+		}
+		catch(Exception e) {
 			return name;
 		}
 	}
