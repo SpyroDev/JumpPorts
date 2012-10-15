@@ -45,6 +45,7 @@ public class JumpPort {
 		this.enabled = defaults.getBoolean("enabled", false);
 		this.instant = defaults.getBoolean("instant", false);
 		this.price = defaults.getDouble("price", 0.00);
+		load();
 	}
 
 	public String getName() {
@@ -81,22 +82,27 @@ public class JumpPort {
 
 	public void setName(String name) {
 		this.name = name;
+		save();
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
+		save();
 	}
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+		save();
 	}
 
 	public void setInstant(boolean instant) {
 		this.instant = instant;
+		save();
 	}
 
 	public void setPrice(double price) {
 		this.price = price;
+		save();
 	}
 
 	public boolean hasBlock(int x, int y, int z) {
@@ -122,43 +128,64 @@ public class JumpPort {
 		int zMax = (z1 < z2) ? z2 : z1;
 		minLoc = new Location(Bukkit.getServer().getWorld(world), xMin, yMin, zMin);
 		maxLoc = new Location(Bukkit.getServer().getWorld(world), xMax, yMax, zMax);
+		save();
 	}
 	
 	public boolean canTeleport(Player player) {
-		if(!blacklist.contains(player.getName()) && !blacklist.contains("g:"+JumpPortsPlugin.permission.getPrimaryGroup(player))) {
-			if(!whitelist.isEmpty()) {
-				if(whitelist.contains(player.getName()) || whitelist.contains("g:"+JumpPortsPlugin.permission.getPrimaryGroup(player))) {
+		try {
+			if(!blacklist.contains(player.getName()) && !blacklist.contains("g:"+JumpPortsPlugin.permission.getPrimaryGroup(player))) {
+				if(!whitelist.isEmpty()) {
+					if(whitelist.contains(player.getName()) || whitelist.contains("g:"+JumpPortsPlugin.permission.getPrimaryGroup(player))) {
+						return true;
+					}
+				}
+				else {
 					return true;
 				}
 			}
-			else {
-				return true;
-			}
+			return false;
 		}
-		return false;
+		catch (UnsupportedOperationException e) {
+			if(!blacklist.contains(player.getName())) {
+				if(!whitelist.isEmpty()) {
+					if(whitelist.contains(player.getName())) {
+						return true;
+					}
+				}
+				else {
+					return true;
+				}
+			}			
+			return false;
+		}
+		
 	}
 	
 	public void addToWhitelist(String playername) {
 		if(!whitelist.contains(playername)) {
 			whitelist.add(playername);
+			save();
 		}
 	}
 	
 	public void addToBlacklist(String playername) {
 		if(!blacklist.contains(playername)) {
 			blacklist.add(playername);
+			save();
 		}
 	}
 	
 	public void removeFromWhitelist(String playername) {
 		if(whitelist.contains(playername)) {
 			whitelist.remove(playername);
+			save();
 		}
 	}
 	
 	public void removeFromBlacklist(String playername) {
 		if(blacklist.contains(playername)) {
 			blacklist.remove(playername);
+			save();
 		}
 	}
 
@@ -267,9 +294,11 @@ public class JumpPort {
 
 	public void addTarget(Location loc) {
 		locations.add(loc);
+		save();
 	}
 
 	public void deleteTargets() {
 		locations.clear();
+		save();
 	}
 }
