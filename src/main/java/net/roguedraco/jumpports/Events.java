@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -34,6 +35,7 @@ public class Events implements Listener {
 	public static ArrayList<String> teleportQueue = new ArrayList<String>();
 	private static Set<String> ignoredPlayers = new HashSet<String>();
 	private static Set<String> afterEffects = new HashSet<String>();
+	private static Set<Location> ignoreIgnite = new HashSet<Location>();
 
 	public Events(JumpPortsPlugin plugin) {
 		Events.plugin = plugin;
@@ -357,6 +359,7 @@ public class Events implements Listener {
 			Player player = Bukkit.getServer().getPlayer(p);
 			if (JumpPortsPlugin.getPlugin().getConfig()
 					.getBoolean("harmlessLightningArrive", false) == true) {
+				ignoreIgnite.add(player.getWorld().getBlockAt(player.getLocation()).getLocation());
 				player.getWorld().strikeLightningEffect(player.getLocation());
 			}
 			if (JumpPortsPlugin.getPlugin().getConfig()
@@ -459,7 +462,9 @@ public class Events implements Listener {
 			// Lightning?
 			if (JumpPortsPlugin.getPlugin().getConfig()
 					.getBoolean("harmlessLightningLeave", false) == true) {
+				ignoreIgnite.add(player.getWorld().getBlockAt(player.getLocation()).getLocation());
 				player.getWorld().strikeLightningEffect(player.getLocation());
+				
 			}
 
 			RDPlayer rdp = RDPlayers.getPlayer(p);
@@ -505,5 +510,17 @@ public class Events implements Listener {
 					}, 1L);
 		}
 	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+    public void onBlockIgnite(BlockIgniteEvent event)
+    {
+      if (event.getCause() == BlockIgniteEvent.IgniteCause.LIGHTNING) {
+    	  if(ignoreIgnite.contains(event.getBlock().getLocation())) {
+    		  event.setCancelled(true);
+    		  ignoreIgnite.remove(event.getBlock().getLocation());
+    		  JumpPortsPlugin.debug("Cancelled Ignite event.");
+    	  }
+      }
+    }
 
 }
