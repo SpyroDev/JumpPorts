@@ -339,9 +339,9 @@ public class Events implements Listener {
 				PotionEffectType effect = PotionEffectType.getByName(key);
 
 				int duration = plugin.getConfig().getInt(
-						"afterEffects." + key + ".duration", 80);
+						"beginEffects." + key + ".duration", 80);
 				int amplifier = plugin.getConfig().getInt(
-						"afterEffects." + key + ".amplifier", 4);
+						"beginEffects." + key + ".amplifier", 4);
 
 				PotionEffect potionEffect = new PotionEffect(effect, duration,
 						amplifier);
@@ -372,7 +372,10 @@ public class Events implements Listener {
 				while (effects.hasNext()) {
 					String key = effects.next();
 					PotionEffectType effect = PotionEffectType.getByName(key);
-
+					if(effect == null) {
+						JumpPortsPlugin.log("Invalid Potion Effect - "+key);
+						break;
+					}
 					int duration = JumpPortsPlugin.getPlugin().getConfig()
 							.getInt("afterEffects." + key + ".duration", 50);
 					int amplifier = JumpPortsPlugin.getPlugin().getConfig()
