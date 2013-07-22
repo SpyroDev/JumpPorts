@@ -183,9 +183,7 @@ public class JumpPortsPlugin extends JavaPlugin {
 	}
 
 	private void setupDynmap() {
-		// DynmapCommonAPI api =
-		// (DynmapCommonAPI)Bukkit.getPluginManager().getPlugin("dynmap");
-		// MarkerAPI mapi = api.getMarkerAPI();
+		//DynmapAPI dynmapAPI = (DynmapAPI) getServer().getPluginManager().getPlugin("dynmap");
 
 	}
 
