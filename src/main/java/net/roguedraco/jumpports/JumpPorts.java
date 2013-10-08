@@ -56,7 +56,6 @@ public class JumpPorts {
 			if (ext.equalsIgnoreCase("yml")) {
 				name = name.replaceAll(".yml", "");
 				JumpPort port = new JumpPort(name);
-				port.load();
 				ports.put(name, port);
 				JumpPortsPlugin.log(Lang.get("plugin.loaded")+": "+name);
 			}

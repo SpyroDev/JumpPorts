@@ -46,3 +46,13 @@ commands:
   setDescription: "&7Description of &a%N&7 is now '&b%D&7'."
   addedToWhitelist: "&7Players &a'&7%A&a'%7 added to whitelist and &a'&7%R&a'&7 removed from whitelist for &a%N&7."
   addedToBlacklist: "&7Players &a'&7%A&a'%7 added to blacklist and &a'&7%R&a'&7 removed from blacklist for &a%N&7."
+  command:
+    enabled: "&7This port &anow&7 runs player commands!"
+    disabled: "&7This port &cno longer&7 runs player commands!"
+  teleport:
+    enabled: "&7This port &anow&7 teleports players!"
+    disabled: "&7This port &cno longer&7 teleports players!"
+  commands:
+    add: "&7Command &a%C&7 added to &a%N&7."
+    remove: "&7Command &a%C&7 removed from &a%N&7."
+    clear: "&7Commands cleared for &a%N&7."

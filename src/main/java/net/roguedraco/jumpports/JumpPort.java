@@ -19,291 +19,346 @@ import org.bukkit.entity.Player;
 
 public class JumpPort {
 
-	private String name;
-	private String description;
+    private String name;
+    private String description;
+    private boolean enabled;
+    private boolean instant;
+    private boolean cmdPortal;
+    private boolean isTeleport;
+    private double price;
+    private Location minLoc;
+    private Location maxLoc;
+    private Set<Location> locations = new HashSet<>();
+    private List<String> blacklist = new ArrayList<>();
+    private List<String> whitelist = new ArrayList<>();
+    private List<String> commands = new ArrayList<>();
+    private File confFile = null;
+    private FileConfiguration conf = null;
 
-	private boolean enabled;
-	private boolean instant;
-	private double price;
+    public JumpPort(String name) {
+        this.name = name;
+        ConfigurationSection defaults = JumpPortsPlugin.getPlugin().getConfig()
+                .getConfigurationSection("portDefaults");
+        this.description = defaults.getString("description", "");
+        this.enabled = defaults.getBoolean("enabled", true);
+        this.instant = defaults.getBoolean("instant", false);
+        this.cmdPortal = defaults.getBoolean("cmdPortal", false);
+        this.isTeleport = defaults.getBoolean("isTeleport", true);
+        this.price = defaults.getDouble("price", 0.00);
+        load();
+    }
 
-	private Location minLoc;
-	private Location maxLoc;
+    public String getName() {
+        return name;
+    }
 
-	private Set<Location> locations = new HashSet<Location>();
-	private List<String> blacklist = new ArrayList<String>();
-	private List<String> whitelist = new ArrayList<String>();
-	
+    public String getDescription() {
+        try {
+            if (description.length() > 0) {
+                return description;
+            } else {
+                return name;
+            }
+        } catch (Exception e) {
+            return name;
+        }
+    }
 
-	private File confFile = null;
-	private FileConfiguration conf = null;
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-	public JumpPort(String name) {
-		this.name = name;
-		ConfigurationSection defaults = JumpPortsPlugin.getPlugin().getConfig()
-				.getConfigurationSection("portDefaults");
-		this.description = defaults.getString("description", "");
-		this.enabled = defaults.getBoolean("enabled", false);
-		this.instant = defaults.getBoolean("instant", false);
-		this.price = defaults.getDouble("price", 0.00);
-		load();
-	}
+    public boolean isInstant() {
+        return instant;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public boolean isTeleport() {
+        return isTeleport;
+    }
 
-	public String getDescription() {
-		try {
-			if (description.length() > 0) {
-				return description;
-			} else {
-				return name;
-			}
-		}
-		catch(Exception e) {
-			return name;
-		}
-	}
+    public boolean isCmdPortal() {
+        return cmdPortal;
+    }
 
-	public boolean isEnabled() {
-		return enabled;
-	}
+    public double getPrice() {
+        return price;
+    }
 
-	public boolean isInstant() {
-		return instant;
-	}
+    public Location getMinLoc() {
+        return minLoc;
+    }
 
-	public double getPrice() {
-		return price;
-	}
+    public Location getMaxLoc() {
+        return maxLoc;
+    }
 
-	public Location getMinLoc() {
-		return minLoc;
-	}
+    public void setName(String name) {
+        this.name = name;
+        save();
+    }
 
-	public Location getMaxLoc() {
-		return maxLoc;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+        save();
+    }
 
-	public void setName(String name) {
-		this.name = name;
-		save();
-	}
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        save();
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-		save();
-	}
+    public void setInstant(boolean instant) {
+        this.instant = instant;
+        save();
+    }
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-		save();
-	}
+    public void setCmdPortal(boolean cmdPortal) {
+        this.cmdPortal = cmdPortal;
+        save();
+    }
 
-	public void setInstant(boolean instant) {
-		this.instant = instant;
-		save();
-	}
+    public void setIsTeleport(boolean isTeleport) {
+        this.isTeleport = isTeleport;
+        save();
+    }
 
-	public void setPrice(double price) {
-		this.price = price;
-		save();
-	}
+    public void setPrice(double price) {
+        this.price = price;
+        save();
+    }
 
-	public boolean hasBlock(int x, int y, int z) {
-		// Is thie block within the region boundaries?
-		if (minLoc != null && maxLoc != null) {
-			if (minLoc.getBlockX() <= x && x <= maxLoc.getBlockX()
-					&& minLoc.getBlockY() <= y && y <= maxLoc.getBlockY()
-					&& minLoc.getBlockZ() <= z && z <= maxLoc.getBlockZ()) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public boolean hasBlock(int x, int y, int z) {
+        // Is thie block within the region boundaries?
+        if (minLoc != null && maxLoc != null) {
+            if (minLoc.getBlockX() <= x && x <= maxLoc.getBlockX()
+                    && minLoc.getBlockY() <= y && y <= maxLoc.getBlockY()
+                    && minLoc.getBlockZ() <= z && z <= maxLoc.getBlockZ()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public void setRegion(String world, int x1, int y1, int z1, int x2, int y2,
-			int z2) {
-		JumpPortsPlugin.debug("setRegion: "+world+"|"+x1+","+y1+","+z1+"|"+x2+","+y2+","+z2);
-		int xMin = (x1 > x2) ? x2 : x1;
-		int yMin = (y1 > y2) ? y2 : y1;
-		int zMin = (z1 > z2) ? z2 : z1;
-		int xMax = (x1 < x2) ? x2 : x1;
-		int yMax = (y1 < y2) ? y2 : y1;
-		int zMax = (z1 < z2) ? z2 : z1;
-		minLoc = new Location(Bukkit.getServer().getWorld(world), xMin, yMin, zMin);
-		maxLoc = new Location(Bukkit.getServer().getWorld(world), xMax, yMax, zMax);
-		save();
-	}
-	
-	public boolean canTeleport(Player player) {
-		try {
-			if(!blacklist.contains(player.getName()) && !blacklist.contains("g:"+JumpPortsPlugin.permission.getPrimaryGroup(player))) {
-				if(!whitelist.isEmpty()) {
-					if(whitelist.contains(player.getName()) || whitelist.contains("g:"+JumpPortsPlugin.permission.getPrimaryGroup(player))) {
-						return true;
-					}
-				}
-				else {
-					return true;
-				}
-			}
-			return false;
-		}
-		catch (UnsupportedOperationException e) {
-			if(!blacklist.contains(player.getName())) {
-				if(!whitelist.isEmpty()) {
-					if(whitelist.contains(player.getName())) {
-						return true;
-					}
-				}
-				else {
-					return true;
-				}
-			}			
-			return false;
-		}
-		
-	}
-	
-	public void addToWhitelist(String playername) {
-		if(!whitelist.contains(playername)) {
-			whitelist.add(playername);
-			save();
-		}
-	}
-	
-	public void addToBlacklist(String playername) {
-		if(!blacklist.contains(playername)) {
-			blacklist.add(playername);
-			save();
-		}
-	}
-	
-	public void removeFromWhitelist(String playername) {
-		if(whitelist.contains(playername)) {
-			whitelist.remove(playername);
-			save();
-		}
-	}
-	
-	public void removeFromBlacklist(String playername) {
-		if(blacklist.contains(playername)) {
-			blacklist.remove(playername);
-			save();
-		}
-	}
+    public void setRegion(String world, int x1, int y1, int z1, int x2, int y2,
+            int z2) {
+        JumpPortsPlugin.debug("setRegion: " + world + "|" + x1 + "," + y1 + "," + z1 + "|" + x2 + "," + y2 + "," + z2);
+        int xMin = (x1 > x2) ? x2 : x1;
+        int yMin = (y1 > y2) ? y2 : y1;
+        int zMin = (z1 > z2) ? z2 : z1;
+        int xMax = (x1 < x2) ? x2 : x1;
+        int yMax = (y1 < y2) ? y2 : y1;
+        int zMax = (z1 < z2) ? z2 : z1;
+        minLoc = new Location(Bukkit.getServer().getWorld(world), xMin, yMin, zMin);
+        maxLoc = new Location(Bukkit.getServer().getWorld(world), xMax, yMax, zMax);
+        save();
+    }
 
-	public void save() {
-		confFile = new File("plugins/JumpPorts/ports/", name + ".yml");
-		conf = YamlConfiguration.loadConfiguration(confFile);
+    public boolean canTeleport(Player player) {
+        try {
+            if (!blacklist.contains(player.getName()) && !blacklist.contains("g:" + JumpPortsPlugin.permission.getPrimaryGroup(player))) {
+                if (!whitelist.isEmpty()) {
+                    if (whitelist.contains(player.getName()) || whitelist.contains("g:" + JumpPortsPlugin.permission.getPrimaryGroup(player))) {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+            }
+        } catch (UnsupportedOperationException e) {
+            if (!blacklist.contains(player.getName())) {
+                if (!whitelist.isEmpty()) {
+                    if (whitelist.contains(player.getName())) {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+            }
+        }
 
-		conf.set("description", description);
-		conf.set("enabled", enabled);
-		conf.set("instant", instant);
-		conf.set("price", price);
+        return false;
+    }
 
-		Location min = this.getMinLoc();
-		Location max = this.getMaxLoc();
+    public void addToWhitelist(String playername) {
+        if (!whitelist.contains(playername)) {
+            whitelist.add(playername);
+            save();
+        }
+    }
 
-		if (min != null && max != null) {
-			conf.set("region.world", min.getWorld().getName());
-			conf.set("region.min.x", min.getBlockX());
-			conf.set("region.min.y", min.getBlockY());
-			conf.set("region.min.z", min.getBlockZ());
-			conf.set("region.max.x", max.getBlockX());
-			conf.set("region.max.y", max.getBlockY());
-			conf.set("region.max.z", max.getBlockZ());
-		}
+    public void addToBlacklist(String playername) {
+        if (!blacklist.contains(playername)) {
+            blacklist.add(playername);
+            save();
+        }
+    }
 
-		int x = 0;
-		for (Location loc : locations) {
-			conf.set("targets." + x + ".world", loc.getWorld().getName());
-			conf.set("targets." + x + ".x", loc.getX());
-			conf.set("targets." + x + ".y", loc.getY());
-			conf.set("targets." + x + ".z", loc.getZ());
-			conf.set("targets." + x + ".yaw", (double) loc.getYaw());
-			conf.set("targets." + x + ".pitch", (double) loc.getPitch());
-			x++;
-		}		
-		
-		conf.set("blacklist", blacklist);
-		conf.set("whitelist", whitelist);
+    public void removeFromWhitelist(String playername) {
+        if (whitelist.contains(playername)) {
+            whitelist.remove(playername);
+            save();
+        }
+    }
 
-		try {
-			conf.save(confFile); // Save the file
-		} catch (IOException ex) {
-			JumpPortsPlugin.log(Level.SEVERE, "Could not save config to "
-					+ confFile);
-		}
-	}
+    public void removeFromBlacklist(String playername) {
+        if (blacklist.contains(playername)) {
+            blacklist.remove(playername);
+            save();
+        }
+    }
 
-	public void load() {
-		confFile = new File("plugins/JumpPorts/ports/", name + ".yml");
-		conf = YamlConfiguration.loadConfiguration(confFile);
+    public void save() {
+        confFile = new File("plugins/JumpPorts/ports/", name + ".yml");
+        conf = YamlConfiguration.loadConfiguration(confFile);
 
-		// Set values
-		this.description = conf.getString("description");
-		this.enabled = conf.getBoolean("enabled");
-		this.instant = conf.getBoolean("instant");
-		this.price = conf.getDouble("price");
+        conf.set("description", description);
+        conf.set("enabled", enabled);
+        conf.set("instant", instant);
+        conf.set("cmdPortal", cmdPortal);
+        conf.set("isTeleport", isTeleport);
+        conf.set("price", price);
 
-		String world = conf.getString("region.world");
-		int xMin = conf.getInt("region.min.x");
-		int yMin = conf.getInt("region.min.y");
-		int zMin = conf.getInt("region.min.z");
-		int xMax = conf.getInt("region.max.x");
-		int yMax = conf.getInt("region.max.y");
-		int zMax = conf.getInt("region.max.z");
-		if (world != null) {
-			this.setRegion(world, xMin, yMin, zMin, xMax, yMax, zMax);
-		}
+        Location min = this.getMinLoc();
+        Location max = this.getMaxLoc();
 
-		// Target Location(s)
-		ConfigurationSection confSection = conf.getConfigurationSection("targets");
-		if (confSection != null) {
-			Iterator<String> locs = confSection.getKeys(false).iterator();
-			while (locs.hasNext()) {
-				String key = locs.next();
-				Location loc = new Location(Bukkit.getWorld(confSection
-						.getString(key + ".world")), confSection.getDouble(key
-						+ ".x"), confSection.getDouble(key + ".y"),
-						confSection.getDouble(key + ".z"),
-						Float.parseFloat(confSection.getString(key + ".yaw")),
-						Float.parseFloat(confSection.getString(key + ".pitch")));
-				this.locations.add(loc);
-			}
-		}
-		
-		this.blacklist = conf.getStringList("blacklist");
-		this.whitelist = conf.getStringList("whitelist");
-	}
+        if (min != null && max != null) {
+            conf.set("region.world", min.getWorld().getName());
+            conf.set("region.min.x", min.getBlockX());
+            conf.set("region.min.y", min.getBlockY());
+            conf.set("region.min.z", min.getBlockZ());
+            conf.set("region.max.x", max.getBlockX());
+            conf.set("region.max.y", max.getBlockY());
+            conf.set("region.max.z", max.getBlockZ());
+        }
 
-	public void delete() {
-		confFile.delete();
-	}
+        int x = 0;
+        for (Location loc : locations) {
+            conf.set("targets." + x + ".world", loc.getWorld().getName());
+            conf.set("targets." + x + ".x", loc.getX());
+            conf.set("targets." + x + ".y", loc.getY());
+            conf.set("targets." + x + ".z", loc.getZ());
+            conf.set("targets." + x + ".yaw", (double) loc.getYaw());
+            conf.set("targets." + x + ".pitch", (double) loc.getPitch());
+            x++;
+        }
 
-	public Location getTarget() {
-		int size = locations.size();
-		if (size > 0) {
-			int item = new Random().nextInt(size);
-			int i = 0;
-			for (Location loc : locations) {
-				if (i == item)
-					return loc;
-				i++;
-			}
-		}
-		return null;
-	}
+        JumpPortsPlugin.log(commands.toString());
+        conf.set("commands", commands);
+        conf.set("blacklist", blacklist);
+        conf.set("whitelist", whitelist);
 
-	public void addTarget(Location loc) {
-		locations.add(loc);
-		save();
-	}
+        try {
+            conf.save(confFile); // Save the file
+        } catch (IOException ex) {
+            JumpPortsPlugin.log(Level.SEVERE, "Could not save config to "
+                    + confFile);
+        }
+    }
 
-	public void deleteTargets() {
-		locations.clear();
-		save();
-	}
+    public final void load() {
+        confFile = new File("plugins/JumpPorts/ports/", name + ".yml");
+        conf = YamlConfiguration.loadConfiguration(confFile);
+
+        // Set values
+        this.description = conf.getString("description");
+        this.enabled = conf.getBoolean("enabled");
+        this.instant = conf.getBoolean("instant");
+        this.cmdPortal = conf.getBoolean("cmdPortal");
+        this.isTeleport = conf.getBoolean("isTeleport");
+        this.price = conf.getDouble("price");
+
+        // Target Location(s)
+        ConfigurationSection confSection = conf.getConfigurationSection("targets");
+        if (confSection != null) {
+            Iterator<String> locs = confSection.getKeys(false).iterator();
+            while (locs.hasNext()) {
+                String key = locs.next();
+                Location loc = new Location(Bukkit.getWorld(confSection
+                        .getString(key + ".world")), confSection.getDouble(key
+                        + ".x"), confSection.getDouble(key + ".y"),
+                        confSection.getDouble(key + ".z"),
+                        Float.parseFloat(confSection.getString(key + ".yaw")),
+                        Float.parseFloat(confSection.getString(key + ".pitch")));
+                this.locations.add(loc);
+            }
+        }
+
+        JumpPortsPlugin.log(commands.toString());
+
+        this.commands = conf.getStringList("commands");
+        this.blacklist = conf.getStringList("blacklist");
+        this.whitelist = conf.getStringList("whitelist");
+
+        String world = conf.getString("region.world");
+        int xMin = conf.getInt("region.min.x");
+        int yMin = conf.getInt("region.min.y");
+        int zMin = conf.getInt("region.min.z");
+        int xMax = conf.getInt("region.max.x");
+        int yMax = conf.getInt("region.max.y");
+        int zMax = conf.getInt("region.max.z");
+        if (world != null) {
+            this.setRegion(world, xMin, yMin, zMin, xMax, yMax, zMax);
+        }
+    }
+
+    public void delete() {
+        confFile.delete();
+    }
+
+    public Location getTarget() {
+        int size = locations.size();
+        if (isTeleport) {
+            if (size > 0) {
+                int item = new Random().nextInt(size);
+                int i = 0;
+                for (Location loc : locations) {
+                    if (i == item) {
+                        return loc;
+                    }
+                    i++;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void addTarget(Location loc) {
+        locations.add(loc);
+        save();
+    }
+
+    public void deleteTargets() {
+        locations.clear();
+        save();
+    }
+
+    public List<String> getCommands() {
+        return commands;
+    }
+
+    public boolean hasCommand(String cmd) {
+        if (commands.contains(cmd)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void addCommand(String cmd) {
+        if (!hasCommand(cmd)) {
+            commands.add(cmd);
+            save();
+        }
+    }
+
+    public void removeCommand(String cmd) {
+        if (hasCommand(cmd)) {
+            commands.remove(cmd);
+            save();
+        }
+    }
+
+    public void deleteCommands() {
+        commands.clear();
+        save();
+    }
 }

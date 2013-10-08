@@ -13,12 +13,9 @@ beginEffects:
   CONFUSION:
     duration: 100
     amplifier: 5
-  BLINDNESS:
-    duration: 90
-    amplifier: 1
 harmlessLightningLeave: false
 harmlessLightningArrive: false
-teleportDelay: 80
+teleportDelay: 50
 triggers:
   sneak: false
   sprint: false
@@ -28,6 +25,8 @@ triggers:
   eggThrow: false
 portDefaults:
   description: ""
-  enabled: false
+  enabled: true
   instant: false
   price: 0.00
+  isTeleport: true
+  cmdPortal: false
