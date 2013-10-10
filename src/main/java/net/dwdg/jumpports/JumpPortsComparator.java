@@ -1,4 +1,4 @@
-package net.roguedraco.jumpports;
+package net.dwdg.jumpports;
 
 import java.util.Comparator;
 

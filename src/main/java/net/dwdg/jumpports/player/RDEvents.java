@@ -1,4 +1,4 @@
-package net.roguedraco.jumpports.player;
+package net.dwdg.jumpports.player;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

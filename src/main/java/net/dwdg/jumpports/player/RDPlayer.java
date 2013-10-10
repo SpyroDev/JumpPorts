@@ -1,4 +1,4 @@
-package net.roguedraco.jumpports.player;
+package net.dwdg.jumpports.player;
 
 import java.io.File;
 import java.io.IOException;

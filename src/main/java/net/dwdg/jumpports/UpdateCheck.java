@@ -1,4 +1,4 @@
-package net.roguedraco.jumpports;
+package net.dwdg.jumpports;
 
 import java.io.InputStream;
 import java.net.URL;

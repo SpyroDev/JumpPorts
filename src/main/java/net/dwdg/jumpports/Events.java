@@ -1,12 +1,16 @@
-package net.roguedraco.jumpports;
+package net.dwdg.jumpports;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import net.dwdg.jumpports.bungee.JPBungee;
 
-import net.roguedraco.jumpports.player.RDPlayer;
-import net.roguedraco.jumpports.player.RDPlayers;
+import net.dwdg.jumpports.player.RDPlayer;
+import net.dwdg.jumpports.player.RDPlayers;
+import net.dwdg.jumpports.util.JPLocation;
+import net.dwdg.jumpports.util.PortCommand;
+import net.dwdg.jumpports.util.PortTrigger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -64,64 +68,20 @@ public class Events implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        // Respect other plugins
-        if (event.isCancelled()) {
-            return;
-        }
+    private boolean preChecks(Player player, Location moveLocation) {
         // Are they already being teleported?
-        if (!teleportQueue.contains(event.getPlayer().getName())) {
-            Player player = event.getPlayer();
+        if (!teleportQueue.contains(player.getName())) {
             // Moved into a telepad?
-            if (JumpPorts.isInPort(event.getTo())) {
-                JumpPort port = JumpPorts.getPort(event.getTo());
+            if (JumpPorts.isInPort(moveLocation)) {
+                JumpPort port = JumpPorts.getPort(moveLocation);
 
                 if (port.isEnabled()) {
 
                     if (port.canTeleport(player)) {
-                        Location loc = port.getTarget();
+
+                        JPLocation loc = port.getTarget();
                         if (loc != null || !port.isTeleport()) {
-
-                            if (port.isInstant()) {
-                                teleportPlayer(player, port, loc);
-                                return;
-                            }
-
-                            // If Jump is on, check for jump
-                            if (JumpPortsPlugin.getPlugin().getConfig()
-                                    .getBoolean("triggers.jump")) {
-                                if (event.getTo().getY() > event.getFrom()
-                                        .getY()) {
-                                    teleportPlayer(player, port, loc);
-                                    return;
-                                }
-                            }
-
-                            // If fall is on, check for fall
-                            if (JumpPortsPlugin.getPlugin().getConfig()
-                                    .getBoolean("triggers.fall")) {
-                                if (event.getTo().getY() < event.getFrom()
-                                        .getY()) {
-                                    teleportPlayer(player, port, loc);
-                                    return;
-                                }
-                            }
-
-                            // Tell them info about the pad
-                            if (!ignoredPlayers.contains(player.getName())) {
-                                player.sendMessage(Lang
-                                        .get("port.triggered")
-                                        .replaceAll("%N", port.getName())
-                                        .replaceAll("%D", port.getDescription()));
-                                if (port.getPrice() > 0) {
-                                    player.sendMessage(Lang.get("port.price")
-                                            .replaceAll("%P",
-                                            "" + port.getPrice()));
-                                }
-                                player.sendMessage(Lang.get("port.triggers"));
-                                ignoredPlayers.add(player.getName());
-                            }
+                            return true;
                         } else {
                             if (!ignoredPlayers.contains(player.getName())) {
                                 if (port.isTeleport()) {
@@ -165,6 +125,82 @@ public class Events implements Listener {
                 }
             }
         }
+        return false;
+    }
+
+    public boolean checkInstant(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        JumpPort port = JumpPorts.getPort(event.getTo());
+
+        if (port.isInstant()) {
+            teleportPlayer(player, port);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkJump(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        JumpPort port = JumpPorts.getPort(event.getTo());
+
+        if (port.hasTrigger(PortTrigger.JUMP)) {
+            if (event.getTo().getY() > event.getFrom().getY()) {
+                teleportPlayer(player, port);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkFall(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        JumpPort port = JumpPorts.getPort(event.getTo());
+
+        if (port.hasTrigger(PortTrigger.FALL)) {
+            if (event.getTo().getY() < event.getFrom().getY()) {
+                teleportPlayer(player, port);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        // Respect other plugins
+        if (event.isCancelled()) {
+            return;
+        }
+        Player player = event.getPlayer();
+
+        if (preChecks(player, event.getTo())) {
+            JumpPort port = JumpPorts.getPort(event.getTo());
+
+            if (checkInstant(event)) {
+                return;
+            }
+            if (checkJump(event)) {
+                return;
+            }
+            if (checkFall(event)) {
+                return;
+            }
+
+            // Tell them info about the pad
+            if (!ignoredPlayers.contains(player.getName())) {
+                player.sendMessage(Lang
+                        .get("port.triggered")
+                        .replaceAll("%N", port.getName())
+                        .replaceAll("%D", port.getDescription()));
+                if (port.getPrice() > 0) {
+                    player.sendMessage(Lang.get("port.price")
+                            .replaceAll("%P",
+                            "" + port.getPrice()));
+                }
+                player.sendMessage(Lang.get("port.triggers"));
+                ignoredPlayers.add(player.getName());
+            }
+        }
     }
 
     @EventHandler
@@ -173,22 +209,14 @@ public class Events implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        if (plugin.getConfig().getBoolean("triggers.sneak")) {
-            if (event.isSneaking()) {
-                if (!teleportQueue.contains(event.getPlayer().getName())) {
-                    Player player = event.getPlayer();
-                    // Moved into a telepad?
-                    if (JumpPorts.isInPort(event.getPlayer().getLocation())) {
-                        JumpPort port = JumpPorts.getPort(event.getPlayer()
-                                .getLocation());
+        Player player = event.getPlayer();
 
-                        if (port.isEnabled()) {
-                            Location loc = port.getTarget();
-                            if (loc != null) {
-                                teleportPlayer(player, port, loc);
-                            }
-                        }
-                    }
+        if (preChecks(player, player.getLocation())) {
+            JumpPort port = JumpPorts.getPort(player.getLocation());
+            if (port.hasTrigger(PortTrigger.SNEAK)) {
+                if (player.isSneaking()) {
+                    teleportPlayer(player, port);
+                    return;
                 }
             }
         }
@@ -196,26 +224,19 @@ public class Events implements Listener {
 
     @EventHandler
     public void onPlayerToggleSprint(PlayerToggleSprintEvent event) {
+
         // Respect other plugins
         if (event.isCancelled()) {
             return;
         }
-        if (plugin.getConfig().getBoolean("triggers.sprint")) {
-            if (event.isSprinting()) {
-                if (!teleportQueue.contains(event.getPlayer().getName())) {
-                    Player player = event.getPlayer();
-                    // Moved into a telepad?
-                    if (JumpPorts.isInPort(event.getPlayer().getLocation())) {
-                        JumpPort port = JumpPorts.getPort(event.getPlayer()
-                                .getLocation());
+        Player player = event.getPlayer();
 
-                        if (port.isEnabled()) {
-                            Location loc = port.getTarget();
-                            if (loc != null) {
-                                teleportPlayer(player, port, loc);
-                            }
-                        }
-                    }
+        if (preChecks(player, player.getLocation())) {
+            JumpPort port = JumpPorts.getPort(player.getLocation());
+            if (port.hasTrigger(PortTrigger.SPRINT)) {
+                if (player.isSprinting()) {
+                    teleportPlayer(player, port);
+                    return;
                 }
             }
         }
@@ -227,21 +248,14 @@ public class Events implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        if (plugin.getConfig().getBoolean("triggers.fireArrow")) {
-            if (event.getEntity() instanceof Player) {
-                Player player = (Player) event.getEntity();
-                if (!teleportQueue.contains(player.getName())) {
-                    // Moved into a telepad?
-                    if (JumpPorts.isInPort(player.getLocation())) {
-                        JumpPort port = JumpPorts.getPort(player.getLocation());
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
 
-                        if (port.isEnabled()) {
-                            Location loc = port.getTarget();
-                            if (loc != null) {
-                                teleportPlayer(player, port, loc);
-                            }
-                        }
-                    }
+            if (preChecks(player, player.getLocation())) {
+                JumpPort port = JumpPorts.getPort(player.getLocation());
+                if (port.hasTrigger(PortTrigger.ARROW)) {
+                    teleportPlayer(player, port);
+                    return;
                 }
             }
         }
@@ -311,21 +325,13 @@ public class Events implements Listener {
 
     @EventHandler
     public void onEggThrow(PlayerEggThrowEvent event) {
-        if (plugin.getConfig().getBoolean("triggers.eggThrow")) {
-            if (!teleportQueue.contains(event.getPlayer().getName())) {
-                Player player = event.getPlayer();
-                // Moved into a telepad?
-                if (JumpPorts.isInPort(event.getPlayer().getLocation())) {
-                    JumpPort port = JumpPorts.getPort(event.getPlayer()
-                            .getLocation());
+        Player player = event.getPlayer();
 
-                    if (port.isEnabled()) {
-                        Location loc = port.getTarget();
-                        if (loc != null) {
-                            teleportPlayer(player, port, loc);
-                        }
-                    }
-                }
+        if (preChecks(player, player.getLocation())) {
+            JumpPort port = JumpPorts.getPort(player.getLocation());
+            if (port.hasTrigger(PortTrigger.EGG)) {
+                teleportPlayer(player, port);
+                return;
             }
         }
     }
@@ -398,7 +404,7 @@ public class Events implements Listener {
         }
     }
 
-    public void teleportPlayer(Player player, JumpPort port, Location loc) {
+    public void teleportPlayer(Player player, JumpPort port) {
 
         JumpPortsPlugin.debug("Port: " + port.getName() + ", Desc:"
                 + port.getDescription() + ", Price: " + port.getPrice()
@@ -412,8 +418,6 @@ public class Events implements Listener {
                 JumpPortsPlugin.debug("Has enough funds. Player: "
                         + JumpPortsPlugin.economy.getBalance(player.getName())
                         + ", Port: " + port.getPrice());
-                JumpPortsPlugin.economy.withdrawPlayer(player.getName(),
-                        port.getPrice());
             } else {
                 JumpPortsPlugin.debug("Not enough funds. Player: "
                         + JumpPortsPlugin.economy.getBalance(player.getName())
@@ -429,12 +433,31 @@ public class Events implements Listener {
         if (port.isCmdPortal()) {
             if (!ignoredPlayers.contains(player.getName())) {
                 if (port.getCommands().size() > 0) {
-                    for (String cmd : port.getCommands()) {
-                        player.chat("/" + cmd);
-                        JumpPortsPlugin.debug("Execute Command: " + player.getName() + " - /" + cmd);
+                    for (PortCommand cmd : port.getCommands()) {
+                        if (cmd.getCommandType().equals(PortCommand.Type.CONSOLE)) {
+                            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.getCommand());
+                        } else {
+                            player.chat("/" + cmd.getCommand());
+                            JumpPortsPlugin.debug("Execute Player Command: " + player.getName() + " - /" + cmd.getCommand());
+                        }
                     }
                 }
             }
+        }
+
+        boolean ableToTeleport = false;
+        
+        // Is this a Bungee teleport?
+        JPLocation target = port.getTarget();
+        if(target.getServer() != "local") {
+            // This portal goes to another server within Bungee, so check with
+            // that server if we are able to teleport this player
+            // to that server.
+            JPBungee.checkTeleportLoc(target);
+        }
+
+        if (ableToTeleport) {
+            JumpPortsPlugin.economy.withdrawPlayer(player.getName(), port.getPrice());
         }
 
         if (JumpPortsPlugin.getPlugin().getConfig().getInt("teleportDelay") > 0) {

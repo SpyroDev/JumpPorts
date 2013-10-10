@@ -1,4 +1,4 @@
-package net.roguedraco.jumpports.commands;
+package net.dwdg.jumpports.commands;
 
 import org.bukkit.command.CommandSender;
 

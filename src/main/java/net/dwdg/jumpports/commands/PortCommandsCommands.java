@@ -2,16 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.roguedraco.jumpports.commands;
+package net.dwdg.jumpports.commands;
 
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.sk89q.minecraft.util.commands.Console;
-import net.roguedraco.jumpports.JumpPort;
-import net.roguedraco.jumpports.JumpPorts;
-import net.roguedraco.jumpports.Lang;
+import net.dwdg.jumpports.JumpPort;
+import net.dwdg.jumpports.JumpPorts;
+import net.dwdg.jumpports.Lang;
 import org.bukkit.command.CommandSender;
 
 /**

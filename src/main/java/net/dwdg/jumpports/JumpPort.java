@@ -1,5 +1,7 @@
-package net.roguedraco.jumpports;
+package net.dwdg.jumpports;
 
+import net.dwdg.jumpports.util.PortCommand;
+import net.dwdg.jumpports.util.JPLocation;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
+import net.dwdg.jumpports.util.PortTrigger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,20 +28,23 @@ public class JumpPort {
     private boolean instant;
     private boolean cmdPortal;
     private boolean isTeleport;
+    
     private double price;
     private Location minLoc;
     private Location maxLoc;
-    private Set<Location> locations = new HashSet<>();
+    private Set<JPLocation> locations = new HashSet<>();
+    private List<PortTrigger> triggers = new ArrayList<>();
+    
     private List<String> blacklist = new ArrayList<>();
     private List<String> whitelist = new ArrayList<>();
-    private List<String> commands = new ArrayList<>();
+    private List<PortCommand> commands = new ArrayList<>();
+    
     private File confFile = null;
     private FileConfiguration conf = null;
 
     public JumpPort(String name) {
         this.name = name;
-        ConfigurationSection defaults = JumpPortsPlugin.getPlugin().getConfig()
-                .getConfigurationSection("portDefaults");
+        ConfigurationSection defaults = JumpPortsPlugin.getPlugin().getConfig().getConfigurationSection("portDefaults");
         this.description = defaults.getString("description", "");
         this.enabled = defaults.getBoolean("enabled", true);
         this.instant = defaults.getBoolean("instant", false);
@@ -128,7 +134,7 @@ public class JumpPort {
     }
 
     public boolean hasBlock(int x, int y, int z) {
-        // Is thie block within the region boundaries?
+        // Is this block within the region boundaries?
         if (minLoc != null && maxLoc != null) {
             if (minLoc.getBlockX() <= x && x <= maxLoc.getBlockX()
                     && minLoc.getBlockY() <= y && y <= maxLoc.getBlockY()
@@ -207,6 +213,15 @@ public class JumpPort {
         }
     }
 
+    public boolean hasTrigger(PortTrigger trigger) {
+        if(JumpPortsPlugin.getPlugin().getConfig().getBoolean("overridePortTriggers", true) == false) {
+            if(triggers.contains(trigger))
+                return true;
+            return false;
+        }
+        return true;
+    }
+    
     public void save() {
         confFile = new File("plugins/JumpPorts/ports/", name + ".yml");
         conf = YamlConfiguration.loadConfiguration(confFile);
@@ -232,8 +247,9 @@ public class JumpPort {
         }
 
         int x = 0;
-        for (Location loc : locations) {
-            conf.set("targets." + x + ".world", loc.getWorld().getName());
+        for (JPLocation loc : locations) {
+            conf.set("targets." + x + ".server", loc.getServer());
+            conf.set("targets." + x + ".world", loc.getWorld());
             conf.set("targets." + x + ".x", loc.getX());
             conf.set("targets." + x + ".y", loc.getY());
             conf.set("targets." + x + ".z", loc.getZ());
@@ -242,8 +258,14 @@ public class JumpPort {
             x++;
         }
 
-        JumpPortsPlugin.log(commands.toString());
-        conf.set("commands", commands);
+        x = 0;
+        for (PortCommand command : commands) {
+            conf.set("commands." + x + ".type", (command.getCommandType()==PortCommand.Type.PLAYER ? "PLAYER" : "CONSOLE"));
+            conf.set("commands." + x + ".command", command.getCommand());
+            x++;
+        }
+        
+        
         conf.set("blacklist", blacklist);
         conf.set("whitelist", whitelist);
 
@@ -273,8 +295,7 @@ public class JumpPort {
             Iterator<String> locs = confSection.getKeys(false).iterator();
             while (locs.hasNext()) {
                 String key = locs.next();
-                Location loc = new Location(Bukkit.getWorld(confSection
-                        .getString(key + ".world")), confSection.getDouble(key
+                JPLocation loc = new JPLocation(confSection.getString(key + ".server"), confSection.getString(key + ".world"), confSection.getDouble(key
                         + ".x"), confSection.getDouble(key + ".y"),
                         confSection.getDouble(key + ".z"),
                         Float.parseFloat(confSection.getString(key + ".yaw")),
@@ -283,9 +304,18 @@ public class JumpPort {
             }
         }
 
-        JumpPortsPlugin.log(commands.toString());
-
-        this.commands = conf.getStringList("commands");
+        // Commands
+        confSection = conf.getConfigurationSection("commands");
+        if (confSection != null) {
+            Iterator<String> cmds = confSection.getKeys(false).iterator();
+            while (cmds.hasNext()) {
+                String key = cmds.next();
+                PortCommand cmd = new PortCommand(PortCommand.getTypeFromString(confSection.getString(key + ".type")), confSection.getString(key + ".command"));
+                
+                this.commands.add(cmd);
+            }
+        }
+        
         this.blacklist = conf.getStringList("blacklist");
         this.whitelist = conf.getStringList("whitelist");
 
@@ -305,13 +335,13 @@ public class JumpPort {
         confFile.delete();
     }
 
-    public Location getTarget() {
+    public JPLocation getTarget() {
         int size = locations.size();
         if (isTeleport) {
             if (size > 0) {
                 int item = new Random().nextInt(size);
                 int i = 0;
-                for (Location loc : locations) {
+                for (JPLocation loc : locations) {
                     if (i == item) {
                         return loc;
                     }
@@ -322,7 +352,7 @@ public class JumpPort {
         return null;
     }
 
-    public void addTarget(Location loc) {
+    public void addTarget(JPLocation loc) {
         locations.add(loc);
         save();
     }
@@ -332,29 +362,43 @@ public class JumpPort {
         save();
     }
 
-    public List<String> getCommands() {
+    public List<PortCommand> getCommands() {
         return commands;
     }
 
-    public boolean hasCommand(String cmd) {
-        if (commands.contains(cmd)) {
-            return true;
+    public boolean hasCommand(String cmdStr) {
+        for(PortCommand cmd : commands) {
+            if(cmd.getCommand().equals(cmdStr))
+                return true;
         }
         return false;
     }
+    
+    public boolean hasCommand(PortCommand cmd) {
+        if(commands.contains(cmd))
+            return true;
+        return false;
+    }
 
-    public void addCommand(String cmd) {
+    public void addCommand(PortCommand cmd) {
         if (!hasCommand(cmd)) {
             commands.add(cmd);
             save();
         }
     }
 
-    public void removeCommand(String cmd) {
-        if (hasCommand(cmd)) {
-            commands.remove(cmd);
-            save();
+    public void removeCommand(String cmdStr) {
+        for(PortCommand cmd : commands) {
+            if(cmd.getCommand().equals(cmdStr))
+                commands.remove(cmd);
         }
+        save();
+    }
+    
+    public void removeCommand(PortCommand cmd) {
+        if(commands.contains(cmd))
+            commands.remove(cmd);
+        save();
     }
 
     public void deleteCommands() {

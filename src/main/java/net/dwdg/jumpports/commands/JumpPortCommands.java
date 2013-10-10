@@ -1,15 +1,15 @@
-package net.roguedraco.jumpports.commands;
+package net.dwdg.jumpports.commands;
 
 import java.util.Collections;
 import java.util.List;
 
-import net.roguedraco.jumpports.JumpPort;
-import net.roguedraco.jumpports.JumpPorts;
-import net.roguedraco.jumpports.JumpPortsComparator;
-import net.roguedraco.jumpports.JumpPortsPlugin;
-import net.roguedraco.jumpports.Lang;
-import net.roguedraco.jumpports.player.RDPlayer;
-import net.roguedraco.jumpports.player.RDPlayers;
+import net.dwdg.jumpports.JumpPort;
+import net.dwdg.jumpports.JumpPorts;
+import net.dwdg.jumpports.JumpPortsComparator;
+import net.dwdg.jumpports.JumpPortsPlugin;
+import net.dwdg.jumpports.Lang;
+import net.dwdg.jumpports.player.RDPlayer;
+import net.dwdg.jumpports.player.RDPlayers;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
