@@ -11,14 +11,14 @@
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
-			<version>1.2.27</version>
+			<version>1.2.29</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.6.4-R0.1-SNAPSHOT</version>
+			<version>1.7.2-R0.2</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -82,7 +82,7 @@
 				</includes>
 				<excludes>
 					<exclude>plugin.yml</exclude>
-                                        <exclude>dynmap-api-1.7.jar</exclude>
+                    <exclude>dynmap-api-1.7.jar</exclude>
 				</excludes>
 			</resource>
 			<resource>

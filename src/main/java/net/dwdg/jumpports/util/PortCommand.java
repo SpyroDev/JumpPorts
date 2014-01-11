@@ -37,5 +37,8 @@ public class PortCommand {
         return PortCommand.Type.PLAYER;
     }
     
+    public void setType(PortCommand.Type type) {
+        this.type = type;
+    }
     
 }

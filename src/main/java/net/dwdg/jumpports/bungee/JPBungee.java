@@ -38,6 +38,9 @@ public class JPBungee implements PluginMessageListener {
 
             out.writeShort(msgbytes.toByteArray().length);
             out.write(msgbytes.toByteArray());
+            
+            
+            JumpPortsPlugin.debug("Sent Plugin Message: Channel: JumpPorts, Message: CHKLOC:" + loc.getWorld() + ":" + loc.getX() + ":" + loc.getY() + ":" + loc.getY());
 
         } catch (Exception e) {
         }

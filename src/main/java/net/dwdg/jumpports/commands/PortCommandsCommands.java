@@ -12,6 +12,7 @@ import com.sk89q.minecraft.util.commands.Console;
 import net.dwdg.jumpports.JumpPort;
 import net.dwdg.jumpports.JumpPorts;
 import net.dwdg.jumpports.Lang;
+import net.dwdg.jumpports.util.PortCommand;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -20,13 +21,19 @@ import org.bukkit.command.CommandSender;
  */
 public class PortCommandsCommands {
 
-    @Command(aliases = {"add", "a"}, usage = "[port] <command>", flags = "", desc = "Adds a command to run on enter", help = "The command the player is forced to execute", min = 2, max = -1)
+    @Command(aliases = {"add", "a"}, usage = "[port] <command>", flags = "c", desc = "Adds a command to run on enter", help = "The command the player is forced to execute", min = 2, max = -1)
     @CommandPermissions("jumpports.admin.commands.add")
     @Console
     public static void add(CommandContext args, CommandSender sender) throws CommandException {
         if (JumpPorts.getPort(args.getString(0)) != null) {
             JumpPort port = JumpPorts.getPort(args.getString(0));
-            port.addCommand(args.getJoinedStrings(1));
+            
+            PortCommand command = new PortCommand(PortCommand.Type.PLAYER,args.getJoinedStrings(1));
+            if(args.hasFlag('c')) {
+                command.setType(PortCommand.Type.CONSOLE);
+            }
+            port.addCommand(command);
+            
             sender.sendMessage(Lang.get("commands.commands.add")
                     .replaceAll("%N", port.getName())
                     .replaceAll("%C", args.getJoinedStrings(1)));

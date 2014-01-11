@@ -10,6 +10,7 @@ import net.dwdg.jumpports.JumpPortsPlugin;
 import net.dwdg.jumpports.Lang;
 import net.dwdg.jumpports.player.RDPlayer;
 import net.dwdg.jumpports.player.RDPlayers;
+import net.dwdg.jumpports.util.JPLocation;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -185,7 +186,7 @@ public class JumpPortCommands {
         if (JumpPorts.getPort(args.getString(0)) != null) {
             Player player = (Player) sender;
             JumpPorts.getPort(args.getString(0))
-                    .addTarget(player.getLocation());
+                    .addTarget(new JPLocation(player.getLocation()));
             sender.sendMessage(Lang.get("commands.targetAdded").replaceAll(
                     "%N", args.getString(0)));
         } else {
@@ -381,6 +382,39 @@ public class JumpPortCommands {
                     .replaceAll("%N", args.getString(0)));
         }
     }
+    
+    @Command(aliases = {"bungee", "bc"}, usage = "[port] <true/false>", flags = "", desc = "Does this port teleport to another server?", help = "Should this port go cross-server?", min = 1, max = 2)
+    @CommandPermissions("jumpports.admin.bungee")
+    @Console
+    public static void bungee(CommandContext args, CommandSender sender) throws CommandException {
+        if (JumpPorts.getPort(args.getString(0)) != null) {
+            JumpPort port = JumpPorts.getPort(args.getString(0));
+            if (args.argsLength() == 1) {
+                if (port.isTeleport()) {
+                    port.setIsBungee(false);
+                    sender.sendMessage(Lang.get("commands.bungee.disabled")
+                            .replaceAll("%N", port.getName()));
+                } else {
+                    port.setIsBungee(true);
+                    sender.sendMessage(Lang.get("commands.bungee.enabled")
+                            .replaceAll("%N", port.getName()));
+                }
+            } else {
+                if (args.getString(1).startsWith("t")) {
+                    port.setIsBungee(true);
+                    sender.sendMessage(Lang.get("commands.bungee.enabled")
+                            .replaceAll("%N", port.getName()));
+                } else {
+                    port.setIsBungee(false);
+                    sender.sendMessage(Lang.get("commands.bungee.disabled")
+                            .replaceAll("%N", port.getName()));
+                }
+            }
+        } else {
+            sender.sendMessage(Lang.get("exceptions.portDoesntExist")
+                    .replaceAll("%N", args.getString(0)));
+        }
+    }
 
     @Command(aliases = {"command", "cmd"}, usage = "[port] <true/false>", flags = "", desc = "Sets whether this port should execute player commands.", help = "Should this port run commands too?", min = 1, max = 2)
     @CommandPermissions("jumpports.admin.command")
@@ -414,10 +448,55 @@ public class JumpPortCommands {
                     .replaceAll("%N", args.getString(0)));
         }
     }
+    
+    @Command(aliases = {"global", "g"}, usage = "[port] <true/false>", flags = "", desc = "Sets whether this port uses the global configuration.", help = "Should this use the global config?", min = 1, max = 2)
+    @CommandPermissions("jumpports.admin.global")
+    @Console
+    public static void global(CommandContext args, CommandSender sender) throws CommandException {
+        if (JumpPorts.getPort(args.getString(0)) != null) {
+            JumpPort port = JumpPorts.getPort(args.getString(0));
+            if (args.argsLength() == 1) {
+                if (port.isUseGlobalConfig()) {
+                    port.setUseGlobalConfig(false);
+                    sender.sendMessage(Lang.get("commands.useGlobalConfig.disabled")
+                            .replaceAll("%N", port.getName()));
+                } else {
+                    port.setUseGlobalConfig(true);
+                    sender.sendMessage(Lang.get("commands.useGlobalConfig.enabled")
+                            .replaceAll("%N", port.getName()));
+                }
+            } else {
+                if (args.getString(1).startsWith("t")) {
+                    port.setUseGlobalConfig(true);
+                    sender.sendMessage(Lang.get("commands.useGlobalConfig.enabled")
+                            .replaceAll("%N", port.getName()));
+                } else {
+                    port.setUseGlobalConfig(false);
+                    sender.sendMessage(Lang.get("commands.useGlobalConfig.disabled")
+                            .replaceAll("%N", port.getName()));
+                }
+            }
+        } else {
+            sender.sendMessage(Lang.get("exceptions.portDoesntExist")
+                    .replaceAll("%N", args.getString(0)));
+        }
+    }
 
     @Command(aliases = {"commands", "cmds"}, usage = "", flags = "", desc = "", help = "", min = 0, max = -1)
     @CommandPermissions("jumpports.admin.commands")
     @NestedCommand(PortCommandsCommands.class)
     public static void commands(CommandContext args, CommandSender sender) {
+    }
+    
+    @Command(aliases = {"aftereffect", "ae"}, usage = "", flags = "", desc = "", help = "", min = 0, max = -1)
+    @CommandPermissions("jumpports.admin.aftereffect")
+    @NestedCommand(AfterEffectCommands.class)
+    public static void aftereffect(CommandContext args, CommandSender sender) {
+    }
+    
+    @Command(aliases = {"beforeeffect", "be"}, usage = "", flags = "", desc = "", help = "", min = 0, max = -1)
+    @CommandPermissions("jumpports.admin.beforeeffect")
+    @NestedCommand(BeforeEffectCommands.class)
+    public static void beforeeffect(CommandContext args, CommandSender sender) {
     }
 }
