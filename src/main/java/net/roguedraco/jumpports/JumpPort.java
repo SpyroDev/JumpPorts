@@ -28,10 +28,10 @@ public class JumpPort {
     private double price;
     private Location minLoc;
     private Location maxLoc;
-    private Set<Location> locations = new HashSet<>();
-    private List<String> blacklist = new ArrayList<>();
-    private List<String> whitelist = new ArrayList<>();
-    private List<String> commands = new ArrayList<>();
+    private Set<Location> locations = new HashSet<Location>();
+    private List<String> blacklist = new ArrayList<String>();
+    private List<String> whitelist = new ArrayList<String>();
+    private List<String> commands = new ArrayList<String>();
     private File confFile = null;
     private FileConfiguration conf = null;
 
