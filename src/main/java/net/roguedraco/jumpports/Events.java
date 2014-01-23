@@ -20,7 +20,6 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -39,14 +38,6 @@ public class Events implements Listener {
 
     public Events(JumpPortsPlugin plugin) {
         Events.plugin = plugin;
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if (JumpPortsPlugin.permission.playerHas(event.getPlayer(),
-                "jumpports.update")) {
-            JumpPortsPlugin.getUpdater().updateNeeded(event.getPlayer());
-        }
     }
 
     @EventHandler

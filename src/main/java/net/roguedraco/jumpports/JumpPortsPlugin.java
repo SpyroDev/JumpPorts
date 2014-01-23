@@ -46,8 +46,6 @@ public class JumpPortsPlugin extends JavaPlugin {
 
 	public static Lang lang;
 
-	private static UpdateCheck updater;
-
 	public void onEnable() {
 
 		this.getConfig().options().copyDefaults(true);
@@ -128,8 +126,6 @@ public class JumpPortsPlugin extends JavaPlugin {
 			// Failed to submit the stats :-(
 		}
 
-		JumpPortsPlugin.updater = new UpdateCheck(this, "http://dev.bukkit.org/server-mods/jumpports/files.rss");
-
 		log(Lang.get("plugin.enabled"));
 	}
 
@@ -142,10 +138,6 @@ public class JumpPortsPlugin extends JavaPlugin {
 
 	public static JavaPlugin getPlugin() {
 		return plugin;
-	}
-
-	public static UpdateCheck getUpdater() {
-		return updater;
 	}
 
 	private void setupCommands() {
