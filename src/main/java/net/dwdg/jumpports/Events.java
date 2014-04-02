@@ -307,7 +307,7 @@ public class Events implements Listener {
 	}
 
 	public void applyBeginEffects(Player player) {
-		JumpPort port = JumpPorts.getPort(RDPlayers.getPlayer(p).getString("targetPort"));
+		JumpPort port = JumpPorts.getPort(RDPlayers.getPlayer(player.getName()).getString("targetPort"));
 		
 		if (port.getBeforeEffects().size() > 0) {
 			
