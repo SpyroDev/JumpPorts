@@ -375,7 +375,7 @@ public class Events implements Listener {
 				if (port.getCommands().size() > 0) {
 					for (PortCommand cmd : port.getCommands()) {
 						if (cmd.getCommandType().equals(PortCommand.Type.CONSOLE)) {
-							Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.getCommand());
+							Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.getCommand().replace("%player%", player.getName()));
 							JumpPortsPlugin.debug("Execute Console Command: " + player.getName() + " - /" + cmd.getCommand());
 						} else {
 							player.chat("/" + cmd.getCommand());
