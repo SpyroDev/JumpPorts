@@ -12,7 +12,6 @@ import java.util.logging.Level;
 
 import net.dwdg.jumpports.util.JPLocation;
 import net.dwdg.jumpports.util.PortCommand;
-import net.dwdg.jumpports.util.PortEffect;
 import net.dwdg.jumpports.util.PortTrigger;
 
 import org.bukkit.Bukkit;
