@@ -1,5 +1,5 @@
 name: ${project.name}
-main: net.roguedraco.jumpports.JumpPortsPlugin
+main: net.dwdg.jumpports.JumpPortsPlugin
 version: ${project.version}
 depends: [Vault]
 dev-url: ${project.url}
