@@ -38,6 +38,7 @@ public class Events implements Listener {
     public static ArrayList<String> teleportQueue = new ArrayList<String>();
     private static Set<String> ignoredPlayers = new HashSet<String>();
     private static Set<String> afterEffects = new HashSet<String>();
+    private static Set<String> cmdDonePlayers = new HashSet<String>();
     private static Set<Location> ignoreIgnite = new HashSet<Location>();
 
     public Events(JumpPortsPlugin plugin) {
@@ -63,6 +64,9 @@ public class Events implements Listener {
         }
         if (afterEffects.contains(name)) {
             afterEffects.remove(name);
+        }
+        if (cmdDonePlayers.contains(name)) {
+            cmdDonePlayers.remove(name);
         }
     }
 
@@ -371,7 +375,7 @@ public class Events implements Listener {
         }
 
         if (port.isCmdPortal()) {
-            if (!ignoredPlayers.contains(player.getName())) {
+            if (!cmdDonePlayers.contains(player.getName())) {
                 if (port.getCommands().size() > 0) {
                     for (PortCommand cmd : port.getCommands()) {
                         if (cmd.getCommandType().equals(PortCommand.Type.CONSOLE)) {
@@ -383,10 +387,9 @@ public class Events implements Listener {
                         }
                     }
                 }
+                cmdDonePlayers.add(player.getName());
             }
         }
-
-        ignoredPlayers.add(player.getName());
 
         boolean ableToTeleport = false;
 
@@ -463,6 +466,7 @@ public class Events implements Listener {
             }
             teleportQueue.remove(p);
             ignoredPlayers.remove(p);
+            cmdDonePlayers.remove(p);
             return;
         }
     }
