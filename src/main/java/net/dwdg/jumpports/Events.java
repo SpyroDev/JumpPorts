@@ -471,8 +471,8 @@ public class Events implements Listener {
                 teleportQueue.remove(player.getName());
                 ignoredPlayers.remove(player.getName());
                 cmdDonePlayers.remove(player.getName());
+                player.sendMessage(Lang.get("port.onArrival").replaceAll("%D", port.getDescription()).replaceAll("%N", port.getName()));
             }
-            player.sendMessage(Lang.get("port.onArrival").replaceAll("%D", port.getDescription()).replaceAll("%N", port.getName()));
         }
     }
 
