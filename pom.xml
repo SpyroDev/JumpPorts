@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.dwdg</groupId>
     <artifactId>JumpPorts</artifactId>
-    <version>2.3.1</version>
+    <version>2.3.2-jenkins-${BUILD_NUMBER}</version>
     <name>JumpPorts</name>
     <url>http://dev.bukkit.org/server-mods/jumpports/</url>
     <description>Bukkit Plugin - Teleport in style</description>
@@ -45,7 +45,7 @@
         </repository>
     </repositories>
     <build>
-        <finalName>${project.name}-jenkins-${buildNumber}</finalName>
+        <finalName>${project.name}-jenkins-${BUILD_NUMBER}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
@@ -68,24 +68,6 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.2</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <docheck>false</docheck>
-                    <doupdate>false</doupdate>
-                    <shortrevisionlength>5</shortrevisionlength>
                 </configuration>
             </plugin>
         </plugins>
