@@ -113,17 +113,19 @@ public class Events implements Listener {
                 String playername = player.getName();
                 JumpPort port = JumpPorts.getPort(RDPlayers.getPlayer(playername).getString("targetPort"));
 
-                if (port.isTeleport()) {
-                    if (ignoredPlayers.contains(playername)) {
-                        if (!teleportQueue.contains(playername)) {
-                            JumpPortsPlugin.debug("Action| Player: " + player.getName() + ", Action: Teleport Cancelled");
-                            ignoredPlayers.remove(playername);
-                            player.sendMessage(Lang.get("port.cancelled"));
+                if (port != null) {
+                    if (port.isTeleport()) {
+                        if (ignoredPlayers.contains(playername)) {
+                            if (!teleportQueue.contains(playername)) {
+                                JumpPortsPlugin.debug("Action| Player: " + player.getName() + ", Action: Teleport Cancelled");
+                                ignoredPlayers.remove(playername);
+                                player.sendMessage(Lang.get("port.cancelled"));
+                            }
                         }
+                    } else {
+                        cmdDonePlayers.remove(playername);
+                        JumpPortsPlugin.debug("Action| Player: " + player.getName() + ", Action: CMD Portal Cancelled");
                     }
-                } else {
-                    cmdDonePlayers.remove(playername);
-                    JumpPortsPlugin.debug("Action| Player: " + player.getName() + ", Action: CMD Portal Cancelled");
                 }
             }
         }
@@ -419,7 +421,7 @@ public class Events implements Listener {
             JumpPortsPlugin.economy.withdrawPlayer(player.getName(), port.getPrice());
         }
 
-        if (port.getTeleportDelay() > 0) {
+        if (!port.isInstant()) {
             applyBeginEffects(player);
 
             if (port.isTeleport()) {
@@ -442,7 +444,28 @@ public class Events implements Listener {
         } else {
             applyBeginEffects(player);
             if (port.isTeleport()) {
-                // player.teleport(target);
+                // Lightning?
+                if (port.isHarmlessLightningLeave()) {
+                    ignoreIgnite.add(player.getWorld().getBlockAt(player.getLocation()).getLocation());
+                    player.getWorld().strikeLightningEffect(player.getLocation());
+
+                }
+
+                Location target2 = new Location(Bukkit.getWorld(rdp.getString("target.world")), rdp.getDouble("target.x"), rdp.getDouble("target.y"), rdp.getDouble("target.z"), Float.parseFloat(rdp.getString("target.yaw")), Float.parseFloat(rdp.getString("target.pitch")));
+
+                player.teleport(target2);
+
+                if (JumpPortsPlugin.getPlugin().getConfig().getBoolean("overrideTeleport") == false) {
+                    afterEffects.add(player.getName());
+                    JumpPortsPlugin.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                        public void run() {
+                            Events.applyAfterEffects();
+                        }
+                    }, 1L);
+                }
+                teleportQueue.remove(player.getName());
+                ignoredPlayers.remove(player.getName());
+                cmdDonePlayers.remove(player.getName());
             }
             player.sendMessage(Lang.get("port.onArrival").replaceAll("%D", port.getDescription()).replaceAll("%N", port.getName()));
         }
