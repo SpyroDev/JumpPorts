@@ -21,6 +21,7 @@ import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.sk89q.minecraft.util.commands.Console;
 import com.sk89q.minecraft.util.commands.NestedCommand;
+import org.bukkit.ChatColor;
 
 public class JumpPortCommands {
 
@@ -480,6 +481,13 @@ public class JumpPortCommands {
             sender.sendMessage(Lang.get("exceptions.portDoesntExist")
                     .replaceAll("%N", args.getString(0)));
         }
+    }
+   
+    @Command(aliases = {"version", "v"}, usage = "", flags = "", desc = "Shows the version of the plugin", help = "Shows the version of the plugin", min = 0, max = 0)
+    @CommandPermissions("jumpports.admin.version")
+    @Console
+    public static void version(CommandContext args, CommandSender sender) throws CommandException {
+        sender.sendMessage(ChatColor.DARK_PURPLE+"["+ChatColor.LIGHT_PURPLE+"JumpPorts"+ChatColor.DARK_PURPLE+"] "+ChatColor.GRAY+"You are using JumpPorts Version "+JumpPortsPlugin.getPlugin().getDescription().getVersion()+".");
     }
 
     @Command(aliases = {"commands", "cmds"}, usage = "", flags = "", desc = "", help = "", min = 0, max = -1)
