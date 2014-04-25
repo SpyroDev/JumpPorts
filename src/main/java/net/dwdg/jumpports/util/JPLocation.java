@@ -20,7 +20,7 @@ public class JPLocation {
     private String world = "";
     private String server = "";
 
-    public JPLocation(String world, String server, double x, double y, double z, float yaw, float pitch) {
+    public JPLocation(String server, String world, double x, double y, double z, float yaw, float pitch) {
         this.world = world;
         this.server = server;
         this.x = x;
