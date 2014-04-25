@@ -1,6 +1,6 @@
 name: ${project.name}
 main: net.dwdg.jumpports.JumpPortsPlugin
-version: ${project.version}
+version: ${project.version}-S${buildNumber}
 depends: [Vault]
 dev-url: ${project.url}
 commands:

@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.roguedraco</groupId>
+    <groupId>net.dwdg</groupId>
     <artifactId>JumpPorts</artifactId>
     <version>2.3.1</version>
     <name>JumpPorts</name>
@@ -23,6 +23,14 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+    <ciManagement>
+        <system>jenkins</system>
+        <url>http://jenkins.dwdg.net/</url>
+    </ciManagement>
+    <scm>
+        <connection>scm:git:git://github.com/SpyroDev/JumpPorts.git</connection>
+        <url>https://github.com/SpyroDev/JumpPorts</url>
+    </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -37,7 +45,7 @@
         </repository>
     </repositories>
     <build>
-        <finalName>${project.name}</finalName>
+        <finalName>${project.name}-jenkins-${buildNumber}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
@@ -60,6 +68,24 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <docheck>false</docheck>
+                    <doupdate>false</doupdate>
+                    <shortrevisionlength>5</shortrevisionlength>
                 </configuration>
             </plugin>
         </plugins>
