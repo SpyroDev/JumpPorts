@@ -123,8 +123,13 @@ public class Events implements Listener {
                             }
                         }
                     } else {
-                        cmdDonePlayers.remove(playername);
-                        JumpPortsPlugin.debug("Action| Player: " + player.getName() + ", Action: CMD Portal Cancelled");
+                        if (cmdDonePlayers.contains(playername)) {
+                            cmdDonePlayers.remove(playername);
+                            if (ignoredPlayers.contains(playername)) {
+                                ignoredPlayers.remove(playername);
+                            }
+                            JumpPortsPlugin.debug("Action| Player: " + player.getName() + ", Action: CMD Portal Cancelled");
+                        }
                     }
                 }
             }
