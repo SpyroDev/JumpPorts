@@ -117,6 +117,7 @@ public class Events implements Listener {
                         ignoredPlayers.remove(playername);
                         player.sendMessage(Lang.get("port.cancelled"));
                     }
+                    cmdDonePlayers.remove(playername);
                 }
             }
         }
@@ -366,7 +367,7 @@ public class Events implements Listener {
         RDPlayer rdp = RDPlayers.getPlayer(player.getName());
 
         rdp.set("targetPort", port.getName());
-        
+
         if (port.getPrice() > 0) {
             JumpPortsPlugin.debug("Price is higher than 0");
             if (JumpPortsPlugin.economy.has(player.getName(), port.getPrice())) {
