@@ -395,11 +395,13 @@ public class Events implements Listener {
 
         // Is this a Bungee teleport?
         JPLocation target = port.getTarget();
-        if (!target.getServer().equals("local")) {
+        if (port.isTeleport()) {
+            if (!target.getServer().equals("local")) {
             // This portal goes to another server within Bungee, so check with
-            // that server if we are able to teleport this player
-            // to that server.
-            JPBungee.checkTeleportLoc(target);
+                // that server if we are able to teleport this player
+                // to that server.
+                JPBungee.checkTeleportLoc(target);
+            }
         }
 
         if (ableToTeleport) {
