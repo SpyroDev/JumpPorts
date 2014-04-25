@@ -363,6 +363,10 @@ public class Events implements Listener {
     public void teleportPlayer(Player player, JumpPort port) {
         JumpPortsPlugin.debug("Port: " + port.getName() + ", Desc:" + port.getDescription() + ", Price: " + port.getPrice() + ", Instant: " + ((port.isInstant() == true) ? "true" : "false") + ", Enabled: " + ((port.isEnabled() == true) ? "true" : "false"));
 
+        RDPlayer rdp = RDPlayers.getPlayer(player.getName());
+
+        rdp.set("targetPort", port.getName());
+        
         if (port.getPrice() > 0) {
             JumpPortsPlugin.debug("Price is higher than 0");
             if (JumpPortsPlugin.economy.has(player.getName(), port.getPrice())) {
@@ -397,7 +401,7 @@ public class Events implements Listener {
         JPLocation target = port.getTarget();
         if (port.isTeleport()) {
             if (!target.getServer().equals("local")) {
-            // This portal goes to another server within Bungee, so check with
+                // This portal goes to another server within Bungee, so check with
                 // that server if we are able to teleport this player
                 // to that server.
                 JPBungee.checkTeleportLoc(target);
@@ -413,7 +417,6 @@ public class Events implements Listener {
 
             if (port.isTeleport()) {
                 teleportQueue.add(player.getName());
-                RDPlayer rdp = RDPlayers.getPlayer(player.getName());
                 rdp.set("target.world", target.getWorld());
                 rdp.set("target.x", target.getX());
                 rdp.set("target.y", target.getY());
