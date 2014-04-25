@@ -111,13 +111,19 @@ public class Events implements Listener {
                 }
             } else {
                 String playername = player.getName();
-                if (ignoredPlayers.contains(playername)) {
-                    if (!teleportQueue.contains(playername)) {
-                        JumpPortsPlugin.debug("Action| Player: " + player.getName() + ", Action: Teleport Cancelled");
-                        ignoredPlayers.remove(playername);
-                        player.sendMessage(Lang.get("port.cancelled"));
+                JumpPort port = JumpPorts.getPort(RDPlayers.getPlayer(playername).getString("targetPort"));
+
+                if (port.isTeleport()) {
+                    if (ignoredPlayers.contains(playername)) {
+                        if (!teleportQueue.contains(playername)) {
+                            JumpPortsPlugin.debug("Action| Player: " + player.getName() + ", Action: Teleport Cancelled");
+                            ignoredPlayers.remove(playername);
+                            player.sendMessage(Lang.get("port.cancelled"));
+                        }
                     }
+                } else {
                     cmdDonePlayers.remove(playername);
+                    JumpPortsPlugin.debug("Action| Player: " + player.getName() + ", Action: CMD Portal Cancelled");
                 }
             }
         }
@@ -391,8 +397,8 @@ public class Events implements Listener {
                             JumpPortsPlugin.debug("Execute Player Command: " + player.getName() + " - /" + cmd.getCommand());
                         }
                     }
+                    cmdDonePlayers.add(player.getName());
                 }
-                cmdDonePlayers.add(player.getName());
             }
         }
 
