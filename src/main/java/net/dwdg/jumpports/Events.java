@@ -456,6 +456,8 @@ public class Events implements Listener {
 
                 }
                 
+                JumpPortsPlugin.debug("JPTarget: s="+target.getServer()+", w="+target.getWorld()+", x="+target.getX()+", y="+target.getY()+", z="+target.getZ()+", yaw="+target.getYaw()+", pitch="+target.getPitch());
+                
                 player.teleport(new Location(Bukkit.getWorld(target.getWorld()),target.getX(),target.getY(),target.getZ(),target.getYaw(),target.getPitch()));
 
                 if (JumpPortsPlugin.getPlugin().getConfig().getBoolean("overrideTeleport") == false) {

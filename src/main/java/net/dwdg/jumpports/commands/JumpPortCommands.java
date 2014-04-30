@@ -489,6 +489,15 @@ public class JumpPortCommands {
     public static void version(CommandContext args, CommandSender sender) throws CommandException {
         sender.sendMessage(ChatColor.DARK_PURPLE+"["+ChatColor.LIGHT_PURPLE+"JumpPorts"+ChatColor.DARK_PURPLE+"] "+ChatColor.GRAY+"You are using JumpPorts Version "+JumpPortsPlugin.getPlugin().getDescription().getVersion()+".");
     }
+    
+    @Command(aliases = {"reload", "load"}, usage = "", flags = "", desc = "Reloads the plugin", help = "Re-loads all of the ports.", min = 0, max = 0)
+    @CommandPermissions("jumpports.admin.reload")
+    @Console
+    public static void reload(CommandContext args, CommandSender sender) throws CommandException {
+        JumpPorts.loadPorts();
+        JumpPortsPlugin.getPlugin().reloadConfig();
+        sender.sendMessage(ChatColor.DARK_PURPLE+"["+ChatColor.LIGHT_PURPLE+"JumpPorts"+ChatColor.DARK_PURPLE+"] "+ChatColor.GRAY+"JumpPorts Reloaded.");
+    }
 
     @Command(aliases = {"commands", "cmds"}, usage = "", flags = "", desc = "", help = "", min = 0, max = -1)
     @CommandPermissions("jumpports.admin.commands")
