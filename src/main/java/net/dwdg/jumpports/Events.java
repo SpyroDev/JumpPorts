@@ -413,6 +413,7 @@ public class Events implements Listener {
 
         // Is this a Bungee teleport?
         JPLocation target = port.getTarget();
+        /*
         if (port.isTeleport()) {
             if (!target.getServer().equals("local")) {
                 // This portal goes to another server within Bungee, so check with
@@ -421,7 +422,8 @@ public class Events implements Listener {
                 JPBungee.checkTeleportLoc(target);
             }
         }
-
+        */
+        
         if (ableToTeleport) {
             JumpPortsPlugin.economy.withdrawPlayer(player.getName(), port.getPrice());
         }
