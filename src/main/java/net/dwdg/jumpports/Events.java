@@ -455,10 +455,8 @@ public class Events implements Listener {
                     player.getWorld().strikeLightningEffect(player.getLocation());
 
                 }
-
-                Location target2 = new Location(Bukkit.getWorld(rdp.getString("target.world")), rdp.getDouble("target.x"), rdp.getDouble("target.y"), rdp.getDouble("target.z"), Float.parseFloat(rdp.getString("target.yaw")), Float.parseFloat(rdp.getString("target.pitch")));
-
-                player.teleport(target2);
+                
+                player.teleport(new Location(Bukkit.getWorld(target.getWorld()),target.getX(),target.getY(),target.getZ(),target.getYaw(),target.getPitch()));
 
                 if (JumpPortsPlugin.getPlugin().getConfig().getBoolean("overrideTeleport") == false) {
                     afterEffects.add(player.getName());
