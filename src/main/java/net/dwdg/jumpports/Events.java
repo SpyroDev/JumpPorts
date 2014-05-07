@@ -400,7 +400,7 @@ public class Events implements Listener {
                             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.getCommand().replace("%player%", player.getName()));
                             JumpPortsPlugin.debug("Execute Console Command: " + player.getName() + " - /" + cmd.getCommand());
                         } else {
-                            player.chat("/" + cmd.getCommand());
+                            player.chat("/" + cmd.getCommand().replace("%player%", player.getName()));
                             JumpPortsPlugin.debug("Execute Player Command: " + player.getName() + " - /" + cmd.getCommand());
                         }
                     }
